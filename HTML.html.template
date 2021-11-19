@@ -1,0 +1,421 @@
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Automation Test Results</title>
+
+        <!-- Bootstrap core CSS -->
+        <!-- temporary: link rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap/3.3.5/css/bootstrap-theme.min.css"-->
+        <!-- temporary: link rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap/3.3.5/css/bootstrap.min.css"-->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <!-- Fonts CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontawesome/4.3.0/css/font-awesome.css">
+
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+		<script>
+			function load() {
+                 var data=@@data@@;
+                 var suite = document.getElementById("tableTestResults");
+                 //GETS SUMMARY DATA FROM _DEFAULT KEY
+                 for (var key in data._default[1]){
+                    if (key == "build"){var build = data._default[1][key];}
+                    else if (key == "start_date"){
+                        var summary_date = data._default[1][key];
+                        summary_date = summary_date.split('.');
+						summary_date = summary_date[0];
+                    }
+                    else if (key == "duration"){var total_duration = data._default[1][key];}
+                    else if (key == "passed"){var total_pass = data._default[1][key];}
+                    else if (key == "failed"){var total_fail = data._default[1][key];}
+                 }
+                 //GETS SUITE DATA FROM _SUITES KEY
+                 for (var key in data._suites){
+                    var suite_name = data._suites[key].suite;
+                    var suite_duration = data._suites[key].duration;
+                    var suite_pass = data._suites[key].passed;
+                    var suite_fail = data._suites[key].failed;
+                    var suite_tests = suite_pass + suite_fail;
+                    var row_data = [];
+                    //GETS CASE DATA FROM _CASES KEY
+                    for (var key in data._cases){
+                        if (suite_name == data._cases[key].suite){
+                            var suite_case = data._cases[key].case;
+                            //GETS TEST DATA FROM _TESTS KEY
+                            for (var key in data._tests){
+                                if (suite_case == data._tests[key].case){
+                                    var test_name = data._tests[key].name;
+                                    var test_pass = data._tests[key].passed;
+                                    var test_duration = data._tests[key].test_duration+data._tests[key].setup_duration;
+                                    var test_browser = data._tests[key].browser.browserName;
+                                    var test_platform = data._tests[key].browser.platform;
+                                    var test_desc = test_name;
+                                    var error = data._tests[key].error;
+                                    //GETS TEST'S NODE VALUE FOR REMOTE EXECUTION
+                                    if (data._tests[key].node_id == null){
+                                        var l_path = data._tests[key].node_id;
+                                    }else{
+                                        var l_path = 'https://app.saucelabs.com/tests/' + data._tests[key].node_id;
+                                    }
+                                    //GETS PASSED VALUE IF TRUE OR FALSE FOR STATUS
+                                    if (test_pass == 1){
+                                        var status = "<a href=" + l_path + " class='btn btn-success btn-xs' role="
+                                                    +"'button' target='_blank'>Pass</a>";
+                                    }else{
+                                        var status = "<a href=" + l_path + " class='btn btn-danger btn-xs' role="
+                                                    +"'button' target='_blank'>Fail</a>";
+                                    }
+                                    //GETS ERROR VALUE AND PROVIDE VIEW BUTTON
+                                    if (error == null){
+                                        error = "";
+                                    }else{
+                                        if (test_pass == 1){
+											error = "<a href=#elog_" +key +" class='btn btn-success btn-xs'"
+                                                +" data-toggle='collapse'>View</a> <div id=elog_" +key
+                                                +" class='collapse'>" +error +"</div> </td>";
+										}
+										else{
+											error = "<a href=#elog_" +key +" class='btn btn-danger btn-xs'"
+                                                +" data-toggle='collapse'>View</a> <div id=elog_" +key
+                                                +" class='collapse'>" +error +"</div> </td>";
+										}
+                                    }
+                                    //APPEND ALL TEST DATA FOR A SUITE
+                                    row_data.push("<tr id='tr_data'> <td class='col-md-3 col-sm-3 col-xs-3' id='td2' title='"
+                                            +test_desc +"'>" +test_name +"</td>"
+                                            +"<td class='col-md-1 col-sm-1 col-xs-1' id='td2'>" +status +"</td>"
+                                            +"<td class='col-md-2 col-sm-2 col-xs-2' id='td2'>"
+                                            +format_time(test_duration) +"</td>"
+                                            +"<td class='col-md-2 col-sm-2 col-xs-2' id='td2'>" +test_platform
+                                            +"</td>" +"<td class='col-md-2 col-sm-2 col-xs-2' id='td2'>"
+                                            +test_browser +"<td class='col-md-2 col-sm-2 col-xs-2' id='td2'>" +error
+                                            +"</td>" +"</tr>");
+                                }
+                            }
+                        }
+                    }
+                    //PROVIDE PASS(GREEN) OR FAIL(RED) COLOR FOR SUITE NAME
+                    if (suite_fail > 0){var color = '#E93C3C';
+                    }else {var color = '#228B22';}
+
+                    suite_name_joined = suite_name.split(' ');
+                    suite_name_joined = suite_name_joined.join('');
+                    row_data = row_data.join('');
+                    //PLOT SUITE AND TEST DATA TABLE
+                    suite.innerHTML = suite.innerHTML + "</table></div></td></tr>"
+                            +"<tr> <td colspan='7' id='td3'> <button data-toggle='collapse' data-target='#"
+                            +suite_name_joined +"' class='accordion-toggle collapsed'> </button>"
+                            +"<strong style='color:" +color +"'>&nbsp;" +suite_name
+                            +"<span class='alignright ts-sub'><span class='total-tc'>"+suite_tests +"</span>|"
+                            +"<span class='passed'>" +suite_pass +"</span>|"
+                            +"<span class='failed'>" +suite_fail +"</span>|"
+                            +"<span class='duration'>" +format_time(suite_duration) +"</span></span>"
+                            +"</strong></td> </tr>"
+                            +"<tr> <td colspan='12' id='hiddenRow'>"
+                            +"<div class='accordian-body collapse' id=" +suite_name_joined +">"
+                            +"<table id='tableTestResults' class='table table-borderless'>"
+                            + row_data;
+                 }
+                 //PROVIDE DATA FOR HTML TEST SUMMARY
+                 document.getElementById("total-testcases").innerHTML=total_pass + total_fail;
+                 document.getElementById("total-pass").innerHTML=total_pass;
+                 document.getElementById("total-fail").innerHTML=total_fail;
+                 document.getElementById("total-duration").innerHTML=format_time(total_duration);
+                 document.getElementById("date_time").innerHTML=summary_date;
+
+                 //FUNCTION FOR RADIO BUTTONS
+                 $("input[type=radio]").change(function () {
+                    var filter = this.value;
+                    if (filter == "All")
+                        $("tr#tr_data").css("visibility", "visible");
+                    else $("tr#tr_data").css("visibility", "collapse");
+                    var matchFound = false;
+                    $("tr#tr_data").find("td#td2.col-md-1.col-sm-1.col-xs-1").each(function () {
+                        $this = $(this);
+                        if (!matchFound) {
+                            if ($this.text() == filter) {
+                                $this.parent().css("visibility", "visible");
+                            }
+                        }
+                    });
+                 });
+			}
+			function format_time(duration){
+			    var date = new Date(null);
+                date.setSeconds(duration); // specify value for SECONDS here
+                var timeString = date.toISOString().substr(11, 8);
+                return timeString;
+			}
+		</script>
+
+        <!-- Custom styles for this template -->
+	<style>
+	  body {
+        background-color: #edecec;
+        color: #777;
+        font-family: 'Open Sans', sans-serif;
+      }
+
+      #td2{
+			border-width: 1px;
+			border-style: solid;
+			text-align: center;
+			border: 1px solid #777;
+	  }
+
+      #td3{
+			border-width: 1px;
+			border-style: solid;
+			text-align: left;
+			background-color: orange;
+	  }
+
+      .navbar-inverse {
+        background-image: none;
+        background-color: #4285F4;
+        border-color: #fff;
+      }
+
+      .navbar-inverse .navbar-brand {
+        color: #fff;
+      }
+
+      .keep-center {
+        text-align: center;
+      }
+
+      .alignleft {
+		text-align: left;
+	  }
+
+	  .alignright {
+		float: right;
+		color: #E93C3C;
+        font-size: 14px;
+	  }
+
+      .table-responsive{
+        overflow: visible;
+      }
+
+      .table > tbody > tr > td,
+      .table > tbody > tr > th,
+      .table > thead > tr > td,
+      .table > thead > tr > th {
+        background-color: #fff;
+        border: 1px solid #aaa !important;
+        text-align: center;
+      }
+      .table > tbody > tr:last-child > td,
+      .table > tbody > tr:last-child > th {
+
+      }
+
+      .table > thead:first-child > tr:first-child > th {
+        background-color: #ccc;
+        color: #495961;
+      }
+
+      #hiddenRow{
+        padding: 0 !important;
+        border: none !important;
+      }
+      #tableTestResults{
+        margin: 0 !important;
+      }
+      .panel {
+        border-radius: 0;
+        border: 1px solid #aaa;
+      }
+
+      .panel-default {
+        background: #fff;
+      }
+
+      .panel-default > .panel-heading {
+        background-image: none;
+        background-color: #ccc;
+        border-radius: 0;
+        border-color: transparent;
+        border-bottom: 1px solid #aaa;
+      }
+
+      .panel-title {
+        color: #495961;
+        font-size: 14px;
+        font-weight: bolder;
+      }
+
+      .panel-body {
+        font-size: 12px;
+      }
+
+      .panel-data-label,
+      .time-label {
+        text-transform: uppercase;
+      }
+
+      .test-result-value {
+        font-size: 55px;
+      }
+
+      .ts-sub {
+        color: grey;
+	  }
+
+	  .total-tc {
+        color: #495961;
+	  }
+
+      .passed {
+        color: #09AD30;
+      }
+
+      .failed {
+        color: #E93C3C;
+      }
+
+      .duration {
+        color: #0087f4;
+      }
+
+      .col-label {
+        padding-right: 3px;
+      }
+
+      .divide {
+        border-right: 1px solid #aaa;
+      }
+
+
+	  .table-borderless td {
+		border: none !important;
+	  }
+
+      #tableLabel {
+        text-transform: uppercase;
+        font-size: 15px;
+      }
+
+      #radio_btn {
+        font-size: 15px;
+      }
+
+      #containerMain {
+        padding-top: 20px;
+      }
+
+      #tableTestResults {
+        font-size: 13px;
+      }
+      .accordion-toggle:after {
+            /* symbol for "opening" panels */
+            font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+            content: "\2212";    /* adjust as needed, taken from bootstrap.css */
+            color: orange;
+      }
+      .accordion-toggle.collapsed:after {
+            /* symbol for "collapsed" panels */
+            content: "\002b";    /* adjust as needed, taken from bootstrap.css */
+            color: orange;
+      }
+	</style>
+	</head>
+	<body onload="load()">
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+	  <div class="container">
+		<div class="navbar-header">
+		  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		  </button>
+		  <a class="navbar-brand" href="">AUTOMATION TEST RESULTS</a>
+		</div>
+	  </div>
+	</nav>
+	<br/><br/><br/>
+
+  <div id="containerMain" class="container">
+    <div class="row">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p class="panel-title alignleft">TEST SUMMARY:
+		  <span class="alignright" id="date_time"></span>
+		  </p>
+        </div>
+        <div class="panel-body">
+          <div class="col-md-3 keep-center divide">
+			<span class="test-result-value" id="total-testcases"></span>
+            <span class="panel-data-label">Total Test cases</span>
+          </div>
+          <div class="col-md-3 keep-center divide passed">
+			<span class="test-result-value" id="total-pass"></span>
+            <span class="panel-data-label">Passed</span>
+          </div>
+          <div class="col-md-3 keep-center divide failed">
+			<span class="test-result-value" id="total-fail"></span>
+            <span class="panel-data-label">Failed</span>
+          </div>
+          <div class="col-md-3 keep-center duration">
+			<span class="test-result-value" id="total-duration"></span>
+            <span class="panel-data-label">Duration(hh:mm:ss)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <span><label id="tableLabel">TEST DETAILS</label></span>
+        <span id="radio_btn" style="float:right">
+            Show Status:
+            <label><input type='radio' name="type" value='All' id="radio_all" checked/>All </label>
+            <label><input type='radio' name="type" value='Pass' id="radio_pass" />Pass </label>
+            <label><input type='radio' name="type" value='Fail' id="radio_fail" />Fail </label>
+        </span>
+      <div/>
+      <div class="table-responsive">
+        <table id="tableTestResults" class="table">
+          <thead>
+          <tr>
+            <th class="col-md-3 col-sm-3 col-xs-3">
+              <span class="col-label">Name</span>
+            </th>
+            <th class="col-md-1 col-sm-1 col-xs-1">
+              <span class="col-label">Status</span>
+            </th>
+            <th class="col-md-2 col-sm-2 col-xs-2">
+              <span class="col-label">Duration</span>
+            </th>
+            <th class="col-md-2 col-sm-2 col-xs-2">
+              <span class="col-label">Platform</span>
+            </th>
+            <th class="col-md-2 col-sm-2 col-xs-2">
+              <span class="col-label">Browser</span>
+            </th>
+            <th class="col-md-2 col-sm-2 col-xs-2">
+              <span class="col-label">Reason</span>
+            </th>
+          </tr>
+          </thead>
+
+            </table>
+          </div>
+        </div>
+  </div>
+  </body>
+</html>
