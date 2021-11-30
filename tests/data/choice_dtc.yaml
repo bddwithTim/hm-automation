@@ -1,0 +1,71 @@
+choice_dtc_sites:
+  dtc-model:
+    url: "https://shop.model.healthmarkets.com/
+    en?Token=d672d103-d73c-4110-baef-4196a7cf9625"
+  dtc-supp:
+      url: "https://shop-supp.healthmarkets.com/
+      en?Token=6bf27db3-3054-4abf-b2b3-150e966b6866"
+  dtc-model-mercer:
+      url: "https://shop.model.healthmarkets.com/
+      en?Token=d672d103-d73c-4110-baef-4196a7cf9625&branding=mercer"
+  dtc-supp-mercer:
+      url: "https://shop-supp.healthmarkets.com/
+      en?Token=6bf27db3-3054-4abf-b2b3-150e966b6866&branding=mercer"
+
+choice_dtc_lob:
+  medicare_insurance:
+    css_value: "#app [id*='Medicare Insurance']"
+    description: "Medicare Insurance"
+  short_term_health_insurance:
+    css_value: "#app [id*='Short Term Health Insurance']"
+    description: "Medicare Insurance"
+  aca_health_insurance:
+    css_value: "#app [id*='ACA Health Insurance']"
+    description: "ACA Health Insurance"
+  dental_insurance:
+    css_value: "#app [id*='Dental Insurance']"
+    description: "Dental Insurance"
+  vision_insurance:
+    css_value: "#app [id*='Vision Insurance']"
+    description: "Vision Insurance"
+  supplemental_insurance:
+    css_value: "#app [id*='Supplemental Insurance']"
+    description: "Supplemental Insurance"
+
+
+demographics:
+  phone:
+    css_selector: input[id^= 'phoneNumber']
+    xpath: //input[contains(@id, 'phoneNumber')]
+  email:
+    css_selector: input[id^= 'email']
+    xpath: //input[@id='email']
+  first_name:
+    css_selector: input[id^= 'firstName']
+    xpath: //input[contains(@id, 'firstName')]
+  last_name:
+    css_selector: input[id^= 'lastName']
+    xpath: //input[contains(@id, 'lastName')]
+  date_of_birth:
+    css_selector: input[id^= 'dateOfBirth']
+    xpath: //input[contains(@id, 'dateOfBirth')]
+  gender:
+    css_selector: "#gender"
+    xpath: //div[@id='gender']
+    male: //li[@data-value='Male']
+    female: //li[@data-value='Female']
+  annual_income:
+    css_selector: input[id^= 'annualIncome']
+    xpath: //input[contains(@id, 'annualIncome')]
+  household_members:
+    css_selector: input[id^= 'totalHouseholdMembers']
+    xpath: //input[contains(@id, 'totalHouseholdMembers')]
+  parent_radio_button:
+    yes_option: //input[@id='parent0']
+    no_option: //input[@id='parent1']
+  tobacco_radio_button:
+    yes_option: //input[@id='tobacco0']
+    no_option: //input[@id='tobacco1']
+  medicare_coverage_year:
+    2021: //p[contains(text(),'2021')]
+    2022: //p[contains(text(),'2022')]
