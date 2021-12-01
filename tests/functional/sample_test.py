@@ -3,7 +3,7 @@ import pytest
 from src.choice_dtc.choice_dtc_action_series import ChoiceDTCActionSeries
 
 
-@pytest.mark.smoke
+@pytest.mark.sample
 def test_sample(driver, request):
     acts = ChoiceDTCActionSeries(request.node.name, driver)
 

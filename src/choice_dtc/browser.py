@@ -17,39 +17,6 @@ import src.lib.base as base
 LOCATOR_TYPE = ['css selector', 'xpath', 'id', 'name', 'class name', 'link text', 'partial link text']
 
 
-def get_driver(browser_name: str = 'chrome', headless: bool = False) -> webdriver:
-    if browser_name == 'chrome':
-        chrome_options = ChromeOptions()
-        chrome_options.add_argument("--incognito")
-        chrome_options.add_argument("--start-maximized")
-        chrome_options.add_argument("--disable-infobars")
-        chrome_options.add_argument("--disable-extensions")
-        # set headless to True to run tests in headless mode
-        if headless:
-            chrome_options.add_argument('--headless')
-            chrome_options.add_argument("--disable-gpu")
-            chrome_options.add_argument("--remote-debugging-port=9222")
-        return webdriver.Chrome(executable_path='.\\src\\drivers\\chromedriver.exe',
-                                options=chrome_options)
-    elif browser_name == 'firefox':
-        return webdriver.Firefox(executable_path=".\\src\\drivers\\geckodriver.exe",
-                                 log_path='.\\logs\\gecko.log')
-    elif browser_name == 'ie':
-        caps = webdriver.DesiredCapabilities.INTERNETEXPLORER
-        caps['ignoreProtectedModeSettings'] = True
-        caps['ignoreZoomSetting'] = True
-        return webdriver.Ie('.\\src\\drivers\\IEDriverServer.exe',
-                            log_file=".\\logs\\ie.log", capabilities=caps)
-    elif browser_name == 'mobile':
-        mobile_emulation = {'deviceName': base.config['device']}
-        chrome_opts = webdriver.ChromeOptions()
-        chrome_opts.add_experimental_option('mobileEmulation', mobile_emulation)
-        return webdriver.Chrome(executable_path='.\\src\\drivers\\chromedriver.exe',
-                                chrome_options=chrome_opts, service_log_path='.\\logs\\mobile.log')
-    elif browser_name == 'safari':
-        return webdriver.Safari()
-
-
 class Browser:
     """
     Utility class for handling Browser operations.
@@ -155,3 +122,50 @@ class Browser:
         if modal:
             self.get_web_element('//*[@id="remove-button-icon"]', locator_type='xpath').click()
             log.info("Modal closed")
+
+
+def get_driver(browser_name: str = 'chrome', headless: bool = False) -> webdriver:
+    if browser_name == 'chrome':
+        chrome_options = ChromeOptions()
+        _chrome_options(
+            chrome_options,
+            "--incognito",
+            "--start-maximized",
+            "--disable-infobars",
+        )
+
+        chrome_options.add_argument("--disable-extensions")
+        # set headless to True to run tests in headless mode
+        if headless:
+            _chrome_options(
+                chrome_options,
+                '--headless',
+                "--disable-gpu",
+                "--remote-debugging-port=9222",
+            )
+
+        return webdriver.Chrome(executable_path='.\\src\\drivers\\chromedriver.exe',
+                                options=chrome_options)
+    elif browser_name == 'firefox':
+        return webdriver.Firefox(executable_path=".\\src\\drivers\\geckodriver.exe",
+                                 log_path='.\\logs\\gecko.log')
+    elif browser_name == 'ie':
+        caps = webdriver.DesiredCapabilities.INTERNETEXPLORER
+        caps['ignoreProtectedModeSettings'] = True
+        caps['ignoreZoomSetting'] = True
+        return webdriver.Ie('.\\src\\drivers\\IEDriverServer.exe',
+                            log_file=".\\logs\\ie.log", capabilities=caps)
+    elif browser_name == 'mobile':
+        mobile_emulation = {'deviceName': base.config['device']}
+        chrome_opts = webdriver.ChromeOptions()
+        chrome_opts.add_experimental_option('mobileEmulation', mobile_emulation)
+        return webdriver.Chrome(executable_path='.\\src\\drivers\\chromedriver.exe',
+                                chrome_options=chrome_opts, service_log_path='.\\logs\\mobile.log')
+    elif browser_name == 'safari':
+        return webdriver.Safari()
+
+
+def _chrome_options(chrome_options, arg1, arg2, arg3):
+    chrome_options.add_argument(arg1)
+    chrome_options.add_argument(arg2)
+    chrome_options.add_argument(arg3)

@@ -38,10 +38,8 @@ def test_demo(test_id, app_type, zip_code, prod_type, phone, email, first_name, 
 
 
 @pytest.mark.smoke
-@pytest.mark.parametrize("test_id, app_type, zip_code, prod_type, phone, email, first_name, last_name,"
-                         " dob, gender, tobacco, parent, plan", read_xls('test_lob.xlsx'))
-def test_selecting_a_specific_plan(test_id, app_type, zip_code, prod_type, phone, email, first_name, last_name,
-              dob, gender, tobacco, parent, plan, driver, request):
+@pytest.mark.parametrize("test_id, app_type, zip_code, prod_type, plan, action", read_xls('test_smoke.xlsx'))
+def test_selecting_a_specific_plan(test_id, app_type, zip_code, prod_type, plan, action, driver, request):
     name = request.node.name
     logger.setup_logger(name, f'{name}.log')
     log = logging.getLogger(name)
@@ -63,11 +61,9 @@ def test_selecting_a_specific_plan(test_id, app_type, zip_code, prod_type, phone
     acts.verify_page_loaded("Quotes page", page_title='Quotes', timeout=60)
     acts.verify_modal_displayed(prod_type, timeout=60)
     acts.close_modal(prod_type)
-    # acts.select_plan('WellCare Focus (HMO)', action='see plan details')
-    # acts.select_plan('WellCare Focus (HMO)', action='compare')
-    acts.select_plan('WellCare Focus (HMO)', action='add to cart')
-    acts.verify_text(description="Add to cart modal", text="Great! You've added a  plan to your cart.")
-    acts.click("Go to my cart button", "//p[text() = 'Go to My Cart']", locator_type='xpath')
+    acts.select_plan('WellCare Focus (HMO)', action=action)
+    # acts.verify_text(description="Add to cart modal", text="Great! You've added a  plan to your cart.")
+    # acts.click("Go to my cart button", "//p[text() = 'Go to My Cart']", locator_type='xpath')
 
 
 @pytest.mark.ui
