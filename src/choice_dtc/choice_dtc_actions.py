@@ -2,11 +2,14 @@ import time
 
 from logging import getLogger
 
-from selenium.webdriver.common.by import By
 from selenium import webdriver
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import TimeoutException
+
 
 import src.lib.base as base
 
@@ -64,15 +67,17 @@ class ChoiceDTCActions:
             data = data[-4:].rjust(len(data), "*")
         log.info(f"Param data: {data}")
         element = self.browser.get_web_element(web_element, locator_type)
+        element.send_keys(f'{Keys.CONTROL}A{Keys.DELETE}')
         element.send_keys(data)
 
-    def hover(self, element_description, element_value, locator_type: str = 'css selector'):
-        # TODO: Implement hover
-        pass
+    def hover(self, element_description: str, web_element: WebElement):
+        log = getLogger(f'{self.test_name}.hover')
+        log.info(f"Param element_description: {element_description}")
+        self.browser.scroll_to_element(web_element)
 
-    def pause(self, timeout: float):
-        log = getLogger(f'{self.test_name}.pause')
-        log.info(f"Pause: {timeout} second(s)")
+    def wait(self, timeout: float):
+        log = getLogger(f'{self.test_name}.wait')
+        log.info(f"Wait: {timeout} second(s)")
         time.sleep(timeout)
 
     def verify_page_loaded(self, page_description: str, page_title: str,
@@ -156,3 +161,15 @@ class ChoiceDTCActions:
         - "add to cart"
         """
         self.quotes.plan_selection(plan_name, action, timeout)
+
+    def select_county(self, county: str, county_selection: str, timeout: int = 10) -> None:
+        """Checks if county selection is displayed and selects county"""
+        self.browser.select_county(county, county_selection, timeout)
+
+    def get_most_popular_plans(self, plan_name: str, file_name: str, timeout: int = 30) -> None:
+        """Gets the images of the most popular plans and save it in the images directory"""
+        self.quotes.get_most_popular_plans(plan_name, file_name, timeout)
+
+    def get_plans(self, plan_name: str, file_name: str, timeout: int = 30) -> None:
+        """Gets the images of the plans and save it in the images directory"""
+        self.quotes.get_plans(plan_name, file_name, timeout)
