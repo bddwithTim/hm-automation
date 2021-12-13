@@ -64,17 +64,3 @@ def test_selecting_a_specific_plan(test_id, app_type, zip_code, prod_type, plan,
     acts.select_plan('WellCare Focus (HMO)', action=action)
     # acts.verify_text(description="Add to cart modal", text="Great! You've added a  plan to your cart.")
     # acts.click("Go to my cart button", "//p[text() = 'Go to My Cart']", locator_type='xpath')
-
-
-@pytest.mark.ui
-def test_capture_logo(driver, request):
-    name = request.node.name
-    logger.setup_logger(name, f'{name}.log')
-    log = logging.getLogger(name)
-    log.info('Test Case Logging Start')
-
-    acts = ChoiceDTCActionSeries(request.node.name, driver)
-
-    acts.get_url("Landing page",
-                 "https://shop.model.healthmarkets.com/en?Token=d672d103-d73c-4110-baef-4196a7cf9625")
-    acts.verify_image_displayed(description="Health Markets logo", web_element="//img[@class='desktop-app-logo']")

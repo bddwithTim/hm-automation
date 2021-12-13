@@ -4,8 +4,6 @@ import yaml
 import json
 import pandas as pd
 
-from PIL import Image
-from io import BytesIO
 from pathlib import Path
 from datetime import date, datetime
 
@@ -126,16 +124,6 @@ def lob_clean_state(driver) -> None:
             lob_element.click()
 
 
-def crop_image(image, x, y, width, height):
-    return image.crop((x, y, x + width, y + height))
-
-
-def capture_image(driver, web_element):
-    if web_element is None:
-        raise ValueError('Web element cannot be None')
-    location = web_element.location
-    size = web_element.size
-    screenshot = driver.get_screenshot_as_png()
-    screenshot = Image.open(BytesIO(screenshot))
-    screenshot = crop_image(screenshot, location['x'], location['y'], size['width'], size['height'])
-    return screenshot
+def title_case(string):
+    # accepts a string and returns a title cased string
+    return " ".join(s.capitalize() for s in string.split(" "))

@@ -42,4 +42,5 @@ junit-report.xml
 logs/
 screenshots/
 reports/
+tests/results/images/
 *.DS_Store

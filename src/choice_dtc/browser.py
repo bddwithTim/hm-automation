@@ -9,6 +9,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.common.exceptions import WebDriverException
 
 from selenium.common.exceptions import TimeoutException
 
@@ -57,7 +58,7 @@ class Browser:
             return self.rest.until(ec.presence_of_element_located((locator_type, element)))
         except TimeoutException:
             log.error(traceback.format_exc())
-            assert False, f"web element '{element}' not found"
+            assert False, f"web element '{element}' not found within timeout: {timeout} second(s)"
 
     def get_web_elements(self, element: str, locator_type: str = 'css selector',
                          timeout: int = 30) -> List[WebElement]:
@@ -73,7 +74,7 @@ class Browser:
             return self.rest.until(ec.presence_of_all_elements_located((locator_type, element)))
         except TimeoutException:
             log.error(traceback.format_exc())
-            assert False, f"web elements '{element}' not found"
+            assert False, f"web element '{element}' not found within timeout: {timeout} second(s)"
 
     def wait_for_element_to_be_clickable(self, element: str, locator_type: str = 'css selector',
                                          timeout: int = 30) -> WebElement:
@@ -122,6 +123,28 @@ class Browser:
         if modal:
             self.get_web_element('//*[@id="remove-button-icon"]', locator_type='xpath').click()
             log.info("Modal closed")
+
+    def select_county(self, county, county_selection, timeout):
+        log = getLogger(f'{self.test_name}.select_county')
+        log.info(f"Param county: {county}")
+        log.info(f"Param county_selection: {county_selection}")
+        if county_selection == 'nan':  # Excel returns `nan` for empty cell
+            return
+        county_dropdown = self.get_web_element("//div[@id='county']",
+                                               locator_type='xpath', timeout=timeout)
+        county_dropdown.click()
+        county = self.get_web_element(f"//li[contains(text(), '{county_selection}')]",
+                                      locator_type='xpath', timeout=timeout)
+        county.click()
+
+    def scroll_to_element(self, web_element) -> None:
+        log = getLogger(f'{self.test_name}.scroll_to_element')
+        log.info(f"Param web_element: {web_element}")
+        try:
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", web_element)
+        except WebDriverException:
+            log.error(traceback.format_exc())
+            assert False, f"Unable to scroll to the element: '{web_element}'"
 
 
 def get_driver(browser_name: str = 'chrome', headless: bool = False) -> webdriver:
