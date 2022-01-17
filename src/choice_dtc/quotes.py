@@ -1,8 +1,6 @@
-import traceback
-import time
-
 from typing import List
 from logging import getLogger
+from datetime import datetime
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -27,17 +25,30 @@ class Quotes:
         self.browser = Browser(self.test_name, self.driver)
         self.image = ChoiceDTCImage(self.test_name, self.driver)
 
-    def wait_for_plans_to_load(self, timeout: int = 30) -> None:
+    def wait_for_plans_to_load(self, timeout: int) -> None:
         log = getLogger(f'{self.test_name}.wait_plans_to_load')
+        log.info(f'Waiting for plans to load, timeout: {timeout}')
         self.rest = WebDriverWait(self.driver, timeout)
+        self.browser.verify_page_is_displayed("Quotes page", page_title='Quotes', timeout=30)
+        plans = "//div[@class = 'MuiTypography-root MuiTypography-h6 MuiTypography-colorTextPrimary']"
+        self.browser.get_web_elements(plans, locator_type='xpath', timeout=timeout)
+
+    # define an async function that will check if the plans are loaded
+    def _no_plans_loaded(self) -> None:
+        log = getLogger(f'{self.test_name}._no_plans_loaded')
+        log.info('Checking if plans are loaded')
+        # checks if the text 'Call us Today!' is present within 20 seconds
+        # if the text is present, it means there are no plans loaded
+        self.rest = WebDriverWait(self.driver, 20)
         try:
-            self.rest.until(ec.presence_of_all_elements_located((
+            self.rest.until(ec.presence_of_element_located((
                 By.XPATH,
-                "//div[@class = 'MuiTypography-root MuiTypography-h6 MuiTypography-colorTextPrimary']"
+                "//h6[contains(text(), 'Call us Today!')]"
             )))
+            log.info('No plans were loaded')
+            assert False, 'No plans were loaded'
         except TimeoutException:
-            log.error(traceback.format_exc())
-            assert False, f"Plans did not load in {timeout} seconds"
+            pass
 
     def plan_selection(self, plan_name: str, action: str, timeout: int) -> None:
         log = getLogger(f'{self.test_name}.select_plan')
@@ -83,24 +94,32 @@ class Quotes:
             if plan_name in plan.text.replace('\n', ' ')
         ]
         if not plans:
-            log.error(f'Plan {plan_name} not found')
-            assert False, f'Plan {plan_name} not found'
+            log.error(f'"{plan_name}" plan not found')
+            assert False, f'"{plan_name}" plan not found'
         return plans
 
-    def get_most_popular_plans(self, plan_name, file_name: str, timeout: int = 10) -> None:
+    def get_most_popular_plans(self, plan_name: str, file_name: str, timeout: int) -> None:
         log = getLogger(f'{self.test_name}.get_most_popular_plans')
         log.info(f'Getting most popular plans for {plan_name}')
         plans = self._get_plan_container(plan_name, timeout)
-        if not plans:
-            log.error(f'Plan {plan_name} not found')
-            assert False, f'Plan {plan_name} not found'
         for plan in plans:
             plan_image = self.image.capture_image(plan)
-            _file_name = f'{file_name}_{time.time()}'
+            _file_name = f"{file_name}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S.%f')[:-3]}"
             self.image.save_image(plan_image, f'{_file_name}')
             log.info(f"File name: '{_file_name} saved to directory: {self.image.image_dir}'")
 
-    def get_plans(self, plans_containing_string: str, file_name: str, timeout: int = 10) -> None:
+    def get_plan_with_popular_ribbon(self, file_name: str, timeout: int) -> None:
+        log = getLogger(f'{self.test_name}.get_popular_ribbon')
+        log.info('Getting plan with the popular ribbon')
+        # getting plan/s with popular ribbon
+        plans = self._get_plan_container("Most Popular", timeout)
+        for plan in plans:
+            plan_image = self.image.capture_image(plan)
+            _file_name = f"{file_name}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S.%f')[:-3]}"
+            self.image.save_image(plan_image, f'{_file_name}')
+            log.info(f"File name: '{_file_name} saved to directory: {self.image.image_dir}'")
+
+    def get_plans(self, plans_containing_string: str, file_name: str, timeout: int) -> None:
         log = getLogger(f'{self.test_name}.get_plans')
         log.info(f"Getting plans containing the string: '{plans_containing_string}'")
         plans = self._get_plan_container(plans_containing_string, timeout)
@@ -109,6 +128,24 @@ class Quotes:
             assert False, f"There are no plans containing the string: '{plans_containing_string}'"
         for plan in plans:
             plan_image = self.image.capture_image(plan)
-            _file_name = f'{file_name}_{time.time()}'
+            _file_name = f"{file_name}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S.%f')[:-3]}"
             self.image.save_image(plan_image, f'{_file_name}')
             log.info(f"File name: '{_file_name} saved to directory: {self.image.image_dir}'")
+
+    def identify_most_popular_plan(self, timeout: int) -> str:
+        log = getLogger(f'{self.test_name}.identify_most_popular_plan')
+        log.info('Identifying the most popular plan')
+        # getting plan/s with popular ribbon
+        plans = self._get_plan_container("Most Popular", timeout)
+        if not plans:
+            log.error('No plan with the popular ribbon found')
+            assert False, 'No plan with the popular ribbon found'
+        # Gets the name of the plan
+        plan_name = plans[0].text.split('Deductible')[0].strip().replace('\n', ' ')
+        log.info(f'Most popular plan: {plan_name}')
+        return plan_name
+
+
+
+
+

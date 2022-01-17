@@ -57,7 +57,7 @@ class Browser:
         try:
             return self.rest.until(ec.presence_of_element_located((locator_type, element)))
         except TimeoutException:
-            log.error(traceback.format_exc())
+            log.error(f"web element '{element}' not found within timeout: {timeout} second(s)")
             assert False, f"web element '{element}' not found within timeout: {timeout} second(s)"
 
     def get_web_elements(self, element: str, locator_type: str = 'css selector',
@@ -73,7 +73,7 @@ class Browser:
         try:
             return self.rest.until(ec.presence_of_all_elements_located((locator_type, element)))
         except TimeoutException:
-            log.error(traceback.format_exc())
+            log.error(f"web element '{element}' not found within timeout: {timeout} second(s)")
             assert False, f"web element '{element}' not found within timeout: {timeout} second(s)"
 
     def wait_for_element_to_be_clickable(self, element: str, locator_type: str = 'css selector',
@@ -128,7 +128,7 @@ class Browser:
         log = getLogger(f'{self.test_name}.select_county')
         log.info(f"Param county: {county}")
         log.info(f"Param county_selection: {county_selection}")
-        if county_selection == 'nan':  # Excel returns `nan` for empty cell
+        if county_selection.lower() == 'nan':  # Excel returns `Nan` for empty cell
             return
         county_dropdown = self.get_web_element("//div[@id='county']",
                                                locator_type='xpath', timeout=timeout)
@@ -150,23 +150,15 @@ class Browser:
 def get_driver(browser_name: str = 'chrome', headless: bool = False) -> webdriver:
     if browser_name == 'chrome':
         chrome_options = ChromeOptions()
-        _chrome_options(
-            chrome_options,
-            "--incognito",
-            "--start-maximized",
-            "--disable-infobars",
-        )
-
+        # chrome_options.add_argument("--incognito")
+        chrome_options.add_argument("--start-maximized")
+        chrome_options.add_argument("--disable-infobars")
         chrome_options.add_argument("--disable-extensions")
         # set headless to True to run tests in headless mode
         if headless:
-            _chrome_options(
-                chrome_options,
-                '--headless',
-                "--disable-gpu",
-                "--remote-debugging-port=9222",
-            )
-
+            chrome_options.add_argument("--headless")
+            chrome_options.add_argument("--disable-gpu")
+            chrome_options.add_argument("--remote-debugging-port=9222")
         return webdriver.Chrome(executable_path='.\\src\\drivers\\chromedriver.exe',
                                 options=chrome_options)
     elif browser_name == 'firefox':
@@ -186,9 +178,3 @@ def get_driver(browser_name: str = 'chrome', headless: bool = False) -> webdrive
                                 chrome_options=chrome_opts, service_log_path='.\\logs\\mobile.log')
     elif browser_name == 'safari':
         return webdriver.Safari()
-
-
-def _chrome_options(chrome_options, arg1, arg2, arg3):
-    chrome_options.add_argument(arg1)
-    chrome_options.add_argument(arg2)
-    chrome_options.add_argument(arg3)

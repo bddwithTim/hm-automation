@@ -6,6 +6,7 @@ import pandas as pd
 
 from pathlib import Path
 from datetime import date, datetime
+from logging import getLogger
 
 from src.choice_dtc.browser import Browser
 
@@ -126,4 +127,31 @@ def lob_clean_state(driver) -> None:
 
 def title_case(string):
     # accepts a string and returns a title cased string
+    if pascal_case(string):
+        return string
     return " ".join(s.capitalize() for s in string.split(" "))
+
+
+def pascal_case(string) -> bool:
+    # accepts a string and checks if the string is in pascal case
+    # pascal case: 'PascalCase'
+    return string != string.lower() and string != string.upper() and " " not in string
+
+
+def is_valid_zip_code(zip_code: str) -> bool:
+    return bool(re.match(r'^\d{5}$', zip_code))
+
+
+def rectify_zip_code(zip_code: str) -> str:
+    # if zip_code is less than 5 digits, add zeros to the front
+    if len(zip_code) < 5:
+        return "0" * (5 - len(zip_code)) + zip_code
+    return zip_code
+
+
+def compare_values(value, value_2) -> None:
+    log = getLogger('compare_values')
+    if value != value_2:
+        log.error(f"Values do not match: {value} != {value_2}")
+        assert False, ValueError(f"Values do not match: {value} != {value_2}")
+    log.info(f'Values match: {value} == {value_2}')

@@ -10,13 +10,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import TimeoutException
 
-
 import src.lib.base as base
 
 from src.choice_dtc.demographics import Demographics
 from src.choice_dtc.browser import Browser
 from src.choice_dtc.quotes import Quotes
-from src.utils.util import lob_clean_state
+from src.utils.util import lob_clean_state, compare_values
 
 LOCATOR_TYPE = ['css selector', 'xpath', 'id', 'name', 'class name', 'link text', 'partial link text']
 
@@ -149,8 +148,6 @@ class ChoiceDTCActions:
         lob_clean_state(driver)
 
     def wait_plans_to_load(self, timeout: int = 60) -> None:
-        log = getLogger(f'{self.test_name}.wait_plans_to_load')
-        log.info('Waiting for plans to load')
         self.quotes.wait_for_plans_to_load(timeout)
 
     def select_plan(self, plan_name: str, action: str, timeout: int = 30) -> None:
@@ -170,6 +167,18 @@ class ChoiceDTCActions:
         """Gets the images of the most popular plans and save it in the images directory"""
         self.quotes.get_most_popular_plans(plan_name, file_name, timeout)
 
+    def get_plan_with_popular_ribbon(self, file_name: str, timeout: int = 30) -> None:
+        """Gets the images of the plans with popular ribbon and save it in the images directory"""
+        self.quotes.get_plan_with_popular_ribbon(file_name, timeout)
+
     def get_plans(self, plan_name: str, file_name: str, timeout: int = 30) -> None:
         """Gets the images of the plans and save it in the images directory"""
         self.quotes.get_plans(plan_name, file_name, timeout)
+
+    def compare(self, expected: str, actual: str) -> None:
+        """ Compares the expected and actual values """
+        compare_values(expected, actual)
+
+    def identify_most_popular_plan(self, timeout: int = 30) -> str:
+        """ Returns the name of the most popular plan """
+        return self.quotes.identify_most_popular_plan(timeout)
