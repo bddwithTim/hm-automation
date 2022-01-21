@@ -167,9 +167,9 @@ class ChoiceDTCActions:
         """Gets the images of the most popular plans and save it in the images directory"""
         self.quotes.get_most_popular_plans(plan_name, file_name, timeout)
 
-    def get_plan_with_popular_ribbon(self, file_name: str, timeout: int = 30) -> None:
+    def get_plan_with_popular_ribbon(self, timeout: int = 30) -> None:
         """Gets the images of the plans with popular ribbon and save it in the images directory"""
-        self.quotes.get_plan_with_popular_ribbon(file_name, timeout)
+        self.quotes.get_plan_with_popular_ribbon(timeout)
 
     def get_plans(self, plan_name: str, file_name: str, timeout: int = 30) -> None:
         """Gets the images of the plans and save it in the images directory"""
@@ -179,6 +179,6 @@ class ChoiceDTCActions:
         """ Compares the expected and actual values """
         compare_values(expected, actual)
 
-    def identify_most_popular_plan(self, timeout: int = 30) -> str:
-        """ Returns the name of the most popular plan """
-        return self.quotes.identify_most_popular_plan(timeout)
+    def verify_plan_id(self, plan_id) -> None:
+        """ Verifies the correct plan id is selected """
+        self.quotes.verify_plan_id(plan_id)

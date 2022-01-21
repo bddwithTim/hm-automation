@@ -98,6 +98,23 @@ class Quotes:
             assert False, f'"{plan_name}" plan not found'
         return plans
 
+    def _get_plan_index(self, plan_name: str, timeout: int) -> int:
+        log = getLogger(f'{self.test_name}._get_plan_index')
+        plan_container = self.browser.get_web_elements(
+            "//div[@class='MuiCardContent-root']",
+            locator_type='xpath',
+            timeout=timeout
+        )
+        plans = [
+            plan
+            for plan in plan_container
+            if plan_name in plan.text.replace('\n', ' ')
+        ]
+        if not plans:
+            log.error(f'"{plan_name}" plan not found')
+            assert False, f'"{plan_name}" plan not found'
+        return plan_container.index(plans[0])
+
     def get_most_popular_plans(self, plan_name: str, file_name: str, timeout: int) -> None:
         log = getLogger(f'{self.test_name}.get_most_popular_plans')
         log.info(f'Getting most popular plans for {plan_name}')
@@ -108,16 +125,18 @@ class Quotes:
             self.image.save_image(plan_image, f'{_file_name}')
             log.info(f"File name: '{_file_name} saved to directory: {self.image.image_dir}'")
 
-    def get_plan_with_popular_ribbon(self, file_name: str, timeout: int) -> None:
+    def get_plan_with_popular_ribbon(self, timeout: int) -> None:
         log = getLogger(f'{self.test_name}.get_popular_ribbon')
         log.info('Getting plan with the popular ribbon')
-        # getting plan/s with popular ribbon
-        plans = self._get_plan_container("Most Popular", timeout)
-        for plan in plans:
-            plan_image = self.image.capture_image(plan)
-            _file_name = f"{file_name}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S.%f')[:-3]}"
-            self.image.save_image(plan_image, f'{_file_name}')
-            log.info(f"File name: '{_file_name} saved to directory: {self.image.image_dir}'")
+        # get the index of the plan that contains the text 'Most Popular'
+        most_popular_index = self._get_plan_index('Most Popular', timeout)
+        # get the web element that contains the text 'See Plan Details' using the index most_popular_index
+        see_plan_details = self.browser.get_web_elements(
+            "//a[text()='See Plan Details']",
+            locator_type='xpath',
+            timeout=timeout
+        )[most_popular_index]
+        see_plan_details.click()
 
     def get_plans(self, plans_containing_string: str, file_name: str, timeout: int) -> None:
         log = getLogger(f'{self.test_name}.get_plans')
@@ -132,20 +151,11 @@ class Quotes:
             self.image.save_image(plan_image, f'{_file_name}')
             log.info(f"File name: '{_file_name} saved to directory: {self.image.image_dir}'")
 
-    def identify_most_popular_plan(self, timeout: int) -> str:
-        log = getLogger(f'{self.test_name}.identify_most_popular_plan')
-        log.info('Identifying the most popular plan')
-        # getting plan/s with popular ribbon
-        plans = self._get_plan_container("Most Popular", timeout)
-        if not plans:
-            log.error('No plan with the popular ribbon found')
-            assert False, 'No plan with the popular ribbon found'
-        # Gets the name of the plan
-        plan_name = plans[0].text.split('Deductible')[0].strip().replace('\n', ' ')
-        log.info(f'Most popular plan: {plan_name}')
-        return plan_name
-
-
-
-
-
+    def verify_plan_id(self, plan_id: str) -> None:
+        log = getLogger(f'{self.test_name}.verify_plan_id')
+        log.info(f'Verifying plan id: {plan_id}')
+        # check the url if it contains the text plan_id
+        if plan_id not in self.driver.current_url:
+            log.error(f'Plan id: {plan_id} not found in the url')
+            assert False, f'Plan id: {plan_id} not found in the url'
+        log.info(f'Plan id: {plan_id} found in the url "{self.driver.current_url}"')

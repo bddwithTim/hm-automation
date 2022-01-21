@@ -8,9 +8,9 @@ from src.utils.util import get_config, read_xls, title_case, rectify_zip_code
 
 
 @pytest.mark.fips_stm
-@pytest.mark.parametrize("zip_code, fips, state, county, county_selection, prod_name",
+@pytest.mark.parametrize("zip_code, fips, state, county, county_selection, prod_name, plan_id",
                          read_xls('stm_most_popular_plans.xlsx'))
-def test_fips_stm(zip_code, fips, state, county, county_selection, prod_name, driver, request):
+def test_fips_stm(zip_code, fips, state, county, county_selection, prod_name, plan_id, driver, request):
     name = request.node.name
     logger.setup_logger(name, f'{name}.log')
     log = logging.getLogger(name)
@@ -31,6 +31,5 @@ def test_fips_stm(zip_code, fips, state, county, county_selection, prod_name, dr
                             gender='Female', email='', parent='No', tobacco='No')
     acts.click("See Quotes button", "//p[text() = 'See Quotes']", locator_type='xpath')
     acts.wait_plans_to_load(timeout=500)
-    acts.get_plan_with_popular_ribbon(file_name=f'{state}_{county}_{zip_code}_{prod_name}')
-    # compare popular plan in excel file vs popular plan in page
-    acts.compare(expected=prod_name, actual=acts.identify_most_popular_plan(timeout=10))
+    acts.get_plan_with_popular_ribbon()
+    acts.verify_plan_id(plan_id)
