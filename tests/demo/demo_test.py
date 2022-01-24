@@ -1,8 +1,9 @@
+import time
 import logging
 import src.lib.log as logger
 import pytest
 
-from src.choice_dtc.choice_dtc_action_series import ChoiceDTCActionSeries
+from src.choice_dtc.choice_dtc_actions import ChoiceDTCActions
 from src.utils.util import get_config, read_xls, parse_str
 
 
@@ -17,7 +18,7 @@ def test_demo(test_id, app_type, zip_code, prod_type, phone, email, first_name, 
     log.info('Test Case Logging Start')
 
     data = get_config('choice_dtc.yaml')
-    acts = ChoiceDTCActionSeries(request.node.name, driver)
+    acts = ChoiceDTCActions(request.node.name, driver)
 
     acts.get_url(app_type, data["choice_dtc_sites"][app_type]["url"])
     acts.lob_default_state(driver)  # ensures no LOBs are selected from previous tests
@@ -32,9 +33,8 @@ def test_demo(test_id, app_type, zip_code, prod_type, phone, email, first_name, 
                             locator_type='css selector')
     acts.click("See Quotes button", "//p[text() = 'See Quotes']", locator_type='xpath')
     acts.verify_page_loaded("Quotes page", page_title='Quotes', timeout=60)
-    acts.verify_modal_displayed(prod_type, timeout=60)
+    acts.verify_modal_displayed(prod_type, timeout=500)
     acts.close_modal(prod_type)
-
 
 
 @pytest.mark.smoke
@@ -46,7 +46,7 @@ def test_selecting_a_specific_plan(test_id, app_type, zip_code, prod_type, plan,
     log.info('Test Case Logging Start')
 
     data = get_config('choice_dtc.yaml')
-    acts = ChoiceDTCActionSeries(request.node.name, driver)
+    acts = ChoiceDTCActions(request.node.name, driver)
 
     acts.get_url(app_type, data["choice_dtc_sites"][app_type]["url"])
     acts.lob_default_state(driver)  # ensures no LOBs are selected from previous tests
@@ -59,8 +59,8 @@ def test_selecting_a_specific_plan(test_id, app_type, zip_code, prod_type, plan,
 
     acts.click("See Quotes button", "//p[text() = 'See Quotes']", locator_type='xpath')
     acts.verify_page_loaded("Quotes page", page_title='Quotes', timeout=60)
-    acts.verify_modal_displayed(prod_type, timeout=60)
+    acts.verify_modal_displayed(prod_type, timeout=500)
     acts.close_modal(prod_type)
-    acts.select_plan('WellCare Focus (HMO)', action=action)
+    acts.select_plan(plan_name=plan, action=action)
     # acts.verify_text(description="Add to cart modal", text="Great! You've added a  plan to your cart.")
     # acts.click("Go to my cart button", "//p[text() = 'Go to My Cart']", locator_type='xpath')

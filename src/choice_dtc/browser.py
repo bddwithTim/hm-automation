@@ -1,4 +1,5 @@
 import traceback
+import time
 
 from typing import List
 from logging import getLogger
@@ -6,6 +7,9 @@ from logging import getLogger
 from selenium import webdriver
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.chrome.options import Options as ChromeOptions
@@ -23,10 +27,55 @@ class Browser:
     Utility class for handling Browser operations.
     """
 
-    def __init__(self, test_name, driver: WebDriver) -> None:
+    def __init__(self, test_name: str, driver: WebDriver) -> None:
         self.test_name = test_name
         self.driver = driver
         self.rest = WebDriverWait(self.driver, 30)
+
+    def get_url(self, page_title: str, url: str, clear_cookie: bool) -> None:
+        """Open an absolute URL."""
+        log = getLogger(f"{self.test_name}.get_url")
+        log.info(f"Param page title: {page_title}")
+        log.info(f"Param url: {url}")
+        if clear_cookie and base.config['execution'] == 'local':
+            self.driver.delete_all_cookies()
+            self.driver.refresh()
+        self.driver.get(url)
+
+    def click(self, element_description: str, element_value: str, locator_type: str) -> None:
+        log = getLogger(f'{self.test_name}.click')
+        log.info(f"Param element_description: {element_description}")
+        web_element = self.wait_for_element_to_be_clickable(element_value, locator_type)
+        time.sleep(0.8)
+        web_element.click()
+
+    def double_click(self, element_description: str, element_value: str, locator_type: str) -> None:
+        # performs double click on the element
+        log = getLogger(f'{self.test_name}.double_click')
+        log.info(f"Param element_description: {element_description}")
+        web_element = self.wait_for_element_to_be_clickable(element_value, locator_type)
+        self.scroll_to_element(web_element)
+        action = ActionChains(self.driver)
+        action.double_click(web_element).perform()
+
+    def enter(self, data: str, web_element: str, mask: bool, locator_type: str) -> None:
+        log = getLogger(f'{self.test_name}.enter')
+        if mask:
+            data = data[-4:].rjust(len(data), "*")
+        log.info(f"Param data: {data}")
+        element = self.get_web_element(web_element, locator_type)
+        element.send_keys(f'{Keys.CONTROL}A{Keys.DELETE}')
+        element.send_keys(data)
+
+    def hover(self, element_description: str, web_element: WebElement):
+        log = getLogger(f'{self.test_name}.hover')
+        log.info(f"Param element_description: {element_description}")
+        self.scroll_to_element(web_element)
+
+    def wait(self, timeout: float):
+        log = getLogger(f'{self.test_name}.wait')
+        log.info(f"Wait: {timeout} second(s)")
+        time.sleep(timeout)
 
     def get_web_element(self, element: str, locator_type: str = 'css selector',
                         timeout: int = 30) -> WebElement:
@@ -145,6 +194,19 @@ class Browser:
         except WebDriverException:
             log.error(traceback.format_exc())
             assert False, f"Unable to scroll to the element: '{web_element}'"
+
+    def verify_text(self, text: str, description: str, timeout: int) -> None:
+        log = getLogger(f'{self.test_name}.verify_text')
+        log.info(f'param text = {text}')
+        log.info(f'param description = {description}')
+        self.rest = WebDriverWait(self.driver, timeout=timeout)
+        web_element = None
+        try:
+            web_element = self.rest.until(ec.visibility_of_element_located(
+                (By.XPATH, f'//*[contains(text(), "{text}")]'))
+            )
+        except TimeoutException:
+            assert text, web_element.text
 
 
 def get_driver(browser_name: str = 'chrome', headless: bool = False) -> webdriver:

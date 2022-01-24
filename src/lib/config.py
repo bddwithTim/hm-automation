@@ -25,7 +25,6 @@ def setup_configs(path=None, option=None):
     if option is None:
         # Get all configuration
         log.info('Config file path "%s"', path)
-        print('Config file path "%s"', path)
         log.info("Acquiring Configurations")
         try:
             base.config['execution'] = config.get('setup', 'execution')

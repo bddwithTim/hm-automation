@@ -3,7 +3,7 @@ import logging
 import src.lib.log as logger
 import pytest
 
-from src.choice_dtc.choice_dtc_action_series import ChoiceDTCActionSeries
+from src.choice_dtc.choice_dtc_actions import ChoiceDTCActions
 from src.utils.util import get_config, read_xls, title_case, rectify_zip_code
 
 
@@ -17,7 +17,7 @@ def test_fips_stm(zip_code, fips, state, county, county_selection, prod_name, pl
     log.info('Test Case Logging Start')
 
     data = get_config('choice_dtc.yaml')
-    acts = ChoiceDTCActionSeries(request.node.name, driver)
+    acts = ChoiceDTCActions(request.node.name, driver)
 
     acts.get_url("dtc-model", data["choice_dtc_sites"]["dtc-model"]["url"])
     acts.lob_default_state(driver)  # ensures no LOBs are selected from previous tests

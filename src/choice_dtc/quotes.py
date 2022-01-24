@@ -1,3 +1,4 @@
+import time
 from typing import List
 from logging import getLogger
 from datetime import datetime
@@ -56,7 +57,7 @@ class Quotes:
         actions = {
             'see plan details': self._click_plan_details,
             'compare': self._click_compare_plans,
-            'add to cart': self.click_add_to_cart,
+            'add to cart': self._click_add_to_cart,
         }
         if action.lower() not in actions:
             log.error(f'Action {action} not found. Valid actions are: {actions.keys()}')
@@ -65,21 +66,35 @@ class Quotes:
         actions[action.lower()](plan_name, timeout)
 
     def _click_plan_details(self, plan_name: str, timeout: int) -> None:
-        # Get's the first element that contains the plan name
-        plan_container = self._get_plan_container(plan_name, timeout)[0]
-        plan_container.find_element_by_xpath("//a[text()='See Plan Details']").click()
+        plan_index = self._get_plan_index(plan_name, timeout)
+        self.browser.get_web_elements(element= "//a[text()='See Plan Details']",
+                                      locator_type= 'xpath',
+                                      timeout= timeout)[plan_index].click()
 
     def _click_compare_plans(self, plan_name: str, timeout: int) -> None:
-        # Get's the first element that contains the plan name
-        plan_container = self._get_plan_container(plan_name, timeout)[0]
-        # click the plan container for "compare" to be visible
+        plan_index = self._get_plan_index(plan_name, timeout)
+        # click the plan_container to make the 'Compare check box' visible
+        plan_container = self.browser.get_web_elements(
+            "//div[@class='MuiCardContent-root']",
+            locator_type='xpath',
+            timeout=timeout
+        )[plan_index]
         plan_container.click()
-        plan_container.find_element_by_xpath("//span[text()='Compare']").click()
+        # click the visible 'Compare check box'
+        compare_checkbox = "//label[contains(@style, 'opacity: 1')]"
+        self.browser.get_web_elements(element=compare_checkbox,
+                                      locator_type='xpath',
+                                      timeout=timeout)[0].click()
 
-    def click_add_to_cart(self, plan_name: str, timeout: int) -> None:
-        # Get's the first element that contains the plan name
-        plan_container = self._get_plan_container(plan_name, timeout)[0]
-        plan_container.find_element_by_xpath("//span[text()='Add To Cart']").click()
+        
+
+
+
+    def _click_add_to_cart(self, plan_name: str, timeout: int) -> None:
+        plan_index = self._get_plan_index(plan_name, timeout)
+        self.browser.get_web_elements(element="//span[text()='Add To Cart']",
+                                      locator_type='xpath',
+                                      timeout=timeout)[plan_index].click()
 
     def _get_plan_container(self, plan_name: str, timeout: int) -> List[WebElement]:
         log = getLogger(f'{self.test_name}._get_plan_container')
@@ -98,7 +113,8 @@ class Quotes:
             assert False, f'"{plan_name}" plan not found'
         return plans
 
-    def _get_plan_index(self, plan_name: str, timeout: int) -> int:
+    def _get_plan_index(self, string_name: str, timeout: int) -> int:
+        """Gets the index of the plan that contains the string_name"""
         log = getLogger(f'{self.test_name}._get_plan_index')
         plan_container = self.browser.get_web_elements(
             "//div[@class='MuiCardContent-root']",
@@ -108,11 +124,11 @@ class Quotes:
         plans = [
             plan
             for plan in plan_container
-            if plan_name in plan.text.replace('\n', ' ')
+            if string_name in plan.text.replace('\n', ' ')
         ]
         if not plans:
-            log.error(f'"{plan_name}" plan not found')
-            assert False, f'"{plan_name}" plan not found'
+            log.error(f'"{string_name}" not found')
+            assert False, f'"{string_name}" not found'
         return plan_container.index(plans[0])
 
     def get_most_popular_plans(self, plan_name: str, file_name: str, timeout: int) -> None:

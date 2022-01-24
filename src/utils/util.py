@@ -8,6 +8,12 @@ from pathlib import Path
 from datetime import date, datetime
 from logging import getLogger
 
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
+from selenium.common.exceptions import TimeoutException
+
 from src.choice_dtc.browser import Browser
 
 
@@ -108,38 +114,17 @@ def parse_str(string):
     return string.lower()
 
 
-def lob_clean_state(driver) -> None:
-    browser = Browser('lob_clean_state', driver)
-    lob_list = [
-        "Medicare Insurance",
-        "Short Term Health Insurance",
-        "ACA Health Insurance",
-        "Dental Insurance",
-        "Vision Insurance",
-        "Supplemental Insurance",
-    ]
-    for lob in lob_list:
-        lob_element = browser.get_web_element(f"//h6[text() = '{lob}']", locator_type='xpath')
-        # if lob is already on a checked state, uncheck it.
-        if "font-weight: bold" in lob_element.get_attribute('style'):
-            lob_element.click()
-
-
 def title_case(string):
     # accepts a string and returns a title cased string
-    if pascal_case(string):
+    if _is_pascal_case(string):
         return string
     return " ".join(s.capitalize() for s in string.split(" "))
 
 
-def pascal_case(string) -> bool:
+def _is_pascal_case(string) -> bool:
     # accepts a string and checks if the string is in pascal case
     # pascal case: 'PascalCase'
     return string != string.lower() and string != string.upper() and " " not in string
-
-
-def is_valid_zip_code(zip_code: str) -> bool:
-    return bool(re.match(r'^\d{5}$', zip_code))
 
 
 def rectify_zip_code(zip_code: str) -> str:

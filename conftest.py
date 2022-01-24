@@ -336,7 +336,6 @@ def driver(request, data):
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
-    print("pytest_runtest_makereport()")
     # this sets the result as a test attribute for SauceLabs reporting.
     # execute all other hooks to obtain the report object
     outcome = yield
