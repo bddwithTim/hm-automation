@@ -1,18 +1,18 @@
 import os
 import pytest
-import atexit
 
 from datetime import datetime
-import src.lib.base as base
-from src.choice_dtc.browser import get_driver
+from src.lib.browser import get_driver
+from src.utils.util import get_config
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def driver():
-    browser = base.config['browser']
+    data = get_config("config.yaml")
+    browser = data["browser"]["name"]
     web_driver = get_driver(browser, headless=False)
     yield web_driver
-    atexit.register(lambda: web_driver.quit())
+    web_driver.quit()
 
 
 # set up a hook to be able to check if a test has failed
@@ -30,7 +30,7 @@ def pytest_runtest_makereport(item):
 
 def pytest_cmdline_preparse(args):
     # generates an html report using the pytest-html plugin
-    args.extend(['--html', f'./reports/report_{datetime.today().strftime("%Y-%m-%d_%H-%M-%S")}.html'])
+    args.extend(["--html", f'./reports/report_{datetime.today().strftime("%Y-%m-%d_%H-%M-%S")}.html'])
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -38,13 +38,13 @@ def test_failed_check(request):
     yield
     # takes a screenshot for the failed test
     if request.node.rep_setup.passed and request.node.rep_call.failed:
-        driver = request.node.funcargs['driver']
+        driver = request.node.funcargs["driver"]
         _capture_screenshot(driver, request.node.name)
 
 
 def _capture_screenshot(driver, node_name):
     file_name = f'{node_name}_{datetime.today().strftime("%Y-%m-%d_%H-%M-%S")}.png'
-    failed_tests_dir = './screenshots/failed_tests'
+    failed_tests_dir = "./screenshots/failed_tests"
     if not os.path.exists(failed_tests_dir):
         os.mkdir(failed_tests_dir)
-    driver.save_screenshot(f'{failed_tests_dir}/{file_name}')
+    driver.save_screenshot(f"{failed_tests_dir}/{file_name}")

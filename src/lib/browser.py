@@ -14,12 +14,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.common.exceptions import WebDriverException
-
 from selenium.common.exceptions import TimeoutException
 
-import src.lib.base as base
+from src.utils.util import get_config
 
-LOCATOR_TYPE = ['css selector', 'xpath', 'id', 'name', 'class name', 'link text', 'partial link text']
+LOCATOR_TYPE = ["css selector", "xpath", "id", "name", "class name", "link text", "partial link text"]
 
 
 class Browser:
@@ -34,16 +33,17 @@ class Browser:
 
     def get_url(self, page_title: str, url: str, clear_cookie: bool) -> None:
         """Open an absolute URL."""
+        data = get_config("config.yaml")
         log = getLogger(f"{self.test_name}.get_url")
         log.info(f"Param page title: {page_title}")
         log.info(f"Param url: {url}")
-        if clear_cookie and base.config['execution'] == 'local':
+        if clear_cookie and data["execution_mode"] == "local":
             self.driver.delete_all_cookies()
             self.driver.refresh()
         self.driver.get(url)
 
     def click(self, element_description: str, element_value: str, locator_type: str) -> None:
-        log = getLogger(f'{self.test_name}.click')
+        log = getLogger(f"{self.test_name}.click")
         log.info(f"Param element_description: {element_description}")
         web_element = self.wait_for_element_to_be_clickable(element_value, locator_type)
         time.sleep(0.8)
@@ -51,7 +51,7 @@ class Browser:
 
     def double_click(self, element_description: str, element_value: str, locator_type: str) -> None:
         # performs double click on the element
-        log = getLogger(f'{self.test_name}.double_click')
+        log = getLogger(f"{self.test_name}.double_click")
         log.info(f"Param element_description: {element_description}")
         web_element = self.wait_for_element_to_be_clickable(element_value, locator_type)
         self.scroll_to_element(web_element)
@@ -59,26 +59,25 @@ class Browser:
         action.double_click(web_element).perform()
 
     def enter(self, data: str, web_element: str, mask: bool, locator_type: str) -> None:
-        log = getLogger(f'{self.test_name}.enter')
+        log = getLogger(f"{self.test_name}.enter")
         if mask:
             data = data[-4:].rjust(len(data), "*")
         log.info(f"Param data: {data}")
         element = self.get_web_element(web_element, locator_type)
-        element.send_keys(f'{Keys.CONTROL}A{Keys.DELETE}')
+        element.send_keys(f"{Keys.CONTROL}A{Keys.DELETE}")
         element.send_keys(data)
 
     def hover(self, element_description: str, web_element: WebElement):
-        log = getLogger(f'{self.test_name}.hover')
+        log = getLogger(f"{self.test_name}.hover")
         log.info(f"Param element_description: {element_description}")
         self.scroll_to_element(web_element)
 
     def wait(self, timeout: float):
-        log = getLogger(f'{self.test_name}.wait')
+        log = getLogger(f"{self.test_name}.wait")
         log.info(f"Wait: {timeout} second(s)")
         time.sleep(timeout)
 
-    def get_web_element(self, element: str, locator_type: str = 'css selector',
-                        timeout: int = 30) -> WebElement:
+    def get_web_element(self, element: str, locator_type: str = "css selector", timeout: int = 30) -> WebElement:
         """
         Get the element using the locators css, xpath, id, name, class, link text, partial link text
         default locator type is 'css selector'
@@ -95,12 +94,12 @@ class Browser:
         :param timeout: timeout to wait for element to be found
         :return: WebElement
         """
-        log = getLogger(f'{self.test_name}.get_web_element')
+        log = getLogger(f"{self.test_name}.get_web_element")
         log.info(f"Param element: {element}")
         log.info(f"Param locator_type: {locator_type}")
         if locator_type not in LOCATOR_TYPE:
-            log.error(f'Locator type: {locator_type} is invalid. Valid values: {LOCATOR_TYPE}')
-            assert False, f'Locator type: {locator_type} is invalid. Valid values: {LOCATOR_TYPE}'
+            log.error(f"Locator type: {locator_type} is invalid. Valid values: {LOCATOR_TYPE}")
+            assert False, f"Locator type: {locator_type} is invalid. Valid values: {LOCATOR_TYPE}"
 
         self.rest = WebDriverWait(self.driver, timeout)
         try:
@@ -109,14 +108,13 @@ class Browser:
             log.error(f"web element '{element}' not found within timeout: {timeout} second(s)")
             assert False, f"web element '{element}' not found within timeout: {timeout} second(s)"
 
-    def get_web_elements(self, element: str, locator_type: str = 'css selector',
-                         timeout: int = 30) -> List[WebElement]:
-        log = getLogger(f'{self.test_name}.get_web_elements')
+    def get_web_elements(self, element: str, locator_type: str = "css selector", timeout: int = 30) -> List[WebElement]:
+        log = getLogger(f"{self.test_name}.get_web_elements")
         log.info(f"Param element: {element}")
         log.info(f"Param locator_type: {locator_type}")
         if locator_type not in LOCATOR_TYPE:
-            log.error(f'Locator type: {locator_type} is invalid. Valid values: {LOCATOR_TYPE}')
-            assert False, f'Locator type: {locator_type} is invalid. Valid values: {LOCATOR_TYPE}'
+            log.error(f"Locator type: {locator_type} is invalid. Valid values: {LOCATOR_TYPE}")
+            assert False, f"Locator type: {locator_type} is invalid. Valid values: {LOCATOR_TYPE}"
 
         self.rest = WebDriverWait(self.driver, timeout)
         try:
@@ -125,14 +123,15 @@ class Browser:
             log.error(f"web element '{element}' not found within timeout: {timeout} second(s)")
             assert False, f"web element '{element}' not found within timeout: {timeout} second(s)"
 
-    def wait_for_element_to_be_clickable(self, element: str, locator_type: str = 'css selector',
-                                         timeout: int = 30) -> WebElement:
-        log = getLogger(f'{self.test_name}.wait_for_element_to_be_clickable')
+    def wait_for_element_to_be_clickable(
+        self, element: str, locator_type: str = "css selector", timeout: int = 30
+    ) -> WebElement:
+        log = getLogger(f"{self.test_name}.wait_for_element_to_be_clickable")
         log.info(f"Param element: {element}")
         log.info(f"Param locator_type: {locator_type}")
         if locator_type not in LOCATOR_TYPE:
-            log.error(f'Locator type: {locator_type} is invalid. Valid values: {LOCATOR_TYPE}')
-            assert False, f'Locator type: {locator_type} is invalid. Valid values: {LOCATOR_TYPE}'
+            log.error(f"Locator type: {locator_type} is invalid. Valid values: {LOCATOR_TYPE}")
+            assert False, f"Locator type: {locator_type} is invalid. Valid values: {LOCATOR_TYPE}"
 
         self.rest = WebDriverWait(self.driver, timeout)
         try:
@@ -142,7 +141,7 @@ class Browser:
             assert False, f"web element '{element}' not found"
 
     def verify_page_is_displayed(self, page_description, page_title, timeout: int) -> bool:
-        log = getLogger(f'{self.test_name}.verify_page_loaded')
+        log = getLogger(f"{self.test_name}.verify_page_loaded")
         log.info(f"Param page_description: {page_description}")
         self.rest = WebDriverWait(self.driver, timeout)
         try:
@@ -151,43 +150,8 @@ class Browser:
             log.error(traceback.format_exc())
             assert 0, f"{page_description} page did not load in {timeout} seconds"
 
-    def is_modal_displayed(self, modal_title: str = None,
-                           timeout: int = 30) -> bool:
-        log = getLogger(f'{self.test_name}.is_modal_displayed')
-        modal = self.get_web_element("//div[@class='MuiDialogContent-root']",
-                                     locator_type='xpath', timeout=timeout)
-        if modal_title is None:
-            return modal.is_displayed()
-        if not modal:
-            log.error(f"Modal '{modal_title}' not found")
-            assert False, f"Modal '{modal_title}' not found"
-
-        _modal_title = self.get_web_element(f"//*[contains(text(), '{modal_title}')]",
-                                            locator_type='xpath', timeout=timeout)
-        return bool(_modal_title)
-
-    def close_modal(self) -> None:
-        log = getLogger(f'{self.test_name}.close_modal')
-        modal = self.get_web_element("//div[@class='MuiDialogContent-root']", locator_type='xpath')
-        if modal:
-            self.get_web_element('//*[@id="remove-button-icon"]', locator_type='xpath').click()
-            log.info("Modal closed")
-
-    def select_county(self, county, county_selection, timeout):
-        log = getLogger(f'{self.test_name}.select_county')
-        log.info(f"Param county: {county}")
-        log.info(f"Param county_selection: {county_selection}")
-        if county_selection.lower() == 'nan':  # Excel returns `Nan` for empty cell
-            return
-        county_dropdown = self.get_web_element("//div[@id='county']",
-                                               locator_type='xpath', timeout=timeout)
-        county_dropdown.click()
-        county = self.get_web_element(f"//li[contains(text(), '{county_selection}')]",
-                                      locator_type='xpath', timeout=timeout)
-        county.click()
-
     def scroll_to_element(self, web_element) -> None:
-        log = getLogger(f'{self.test_name}.scroll_to_element')
+        log = getLogger(f"{self.test_name}.scroll_to_element")
         log.info(f"Param web_element: {web_element}")
         try:
             self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", web_element)
@@ -196,21 +160,23 @@ class Browser:
             assert False, f"Unable to scroll to the element: '{web_element}'"
 
     def verify_text(self, text: str, description: str, timeout: int) -> None:
-        log = getLogger(f'{self.test_name}.verify_text')
-        log.info(f'param text = {text}')
-        log.info(f'param description = {description}')
+        log = getLogger(f"{self.test_name}.verify_text")
+        log.info(f"param text = {text}")
+        log.info(f"param description = {description}")
         self.rest = WebDriverWait(self.driver, timeout=timeout)
-        web_element = None
+        web_element = WebDriverWait
         try:
-            web_element = self.rest.until(ec.visibility_of_element_located(
-                (By.XPATH, f'//*[contains(text(), "{text}")]'))
+            web_element = self.rest.until(
+                ec.visibility_of_element_located((By.XPATH, f'//*[contains(text(), "{text}")]'))
             )
         except TimeoutException:
-            assert text, web_element.text
+            log.error(f"web element '{web_element}' not found within timeout: {timeout} second(s)")
+            assert False, f"web element '{web_element}' not found within timeout: {timeout} second(s)"
 
 
-def get_driver(browser_name: str = 'chrome', headless: bool = False) -> webdriver:
-    if browser_name == 'chrome':
+def get_driver(browser_name: str = "chrome", headless: bool = False) -> webdriver:
+    data = get_config("config.yaml")
+    if browser_name == "chrome":
         chrome_options = ChromeOptions()
         # chrome_options.add_argument("--incognito")
         chrome_options.add_argument("--start-maximized")
@@ -221,22 +187,17 @@ def get_driver(browser_name: str = 'chrome', headless: bool = False) -> webdrive
             chrome_options.add_argument("--headless")
             chrome_options.add_argument("--disable-gpu")
             chrome_options.add_argument("--remote-debugging-port=9222")
-        return webdriver.Chrome(executable_path='.\\src\\drivers\\chromedriver.exe',
-                                options=chrome_options)
-    elif browser_name == 'firefox':
-        return webdriver.Firefox(executable_path=".\\src\\drivers\\geckodriver.exe",
-                                 log_path='.\\logs\\gecko.log')
-    elif browser_name == 'ie':
-        caps = webdriver.DesiredCapabilities.INTERNETEXPLORER
-        caps['ignoreProtectedModeSettings'] = True
-        caps['ignoreZoomSetting'] = True
-        return webdriver.Ie('.\\src\\drivers\\IEDriverServer.exe',
-                            log_file=".\\logs\\ie.log", capabilities=caps)
-    elif browser_name == 'mobile':
-        mobile_emulation = {'deviceName': base.config['device']}
+        return webdriver.Chrome(executable_path=".\\src\\drivers\\chromedriver.exe", options=chrome_options)
+    elif browser_name == "firefox":
+        return webdriver.Firefox(executable_path=".\\src\\drivers\\geckodriver.exe", log_path=".\\logs\\gecko.log")
+    elif browser_name == "mobile":
+        mobile_emulation = {"deviceName": data["device"]}
         chrome_opts = webdriver.ChromeOptions()
-        chrome_opts.add_experimental_option('mobileEmulation', mobile_emulation)
-        return webdriver.Chrome(executable_path='.\\src\\drivers\\chromedriver.exe',
-                                chrome_options=chrome_opts, service_log_path='.\\logs\\mobile.log')
-    elif browser_name == 'safari':
+        chrome_opts.add_experimental_option("mobileEmulation", mobile_emulation)
+        return webdriver.Chrome(
+            executable_path=".\\src\\drivers\\chromedriver.exe",
+            chrome_options=chrome_opts,
+            service_log_path=".\\logs\\mobile.log",
+        )
+    elif browser_name == "safari":
         return webdriver.Safari()

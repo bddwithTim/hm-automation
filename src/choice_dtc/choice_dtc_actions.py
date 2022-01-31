@@ -1,15 +1,17 @@
 from logging import getLogger
+from typing import Optional
 
 from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
 
-from src.choice_dtc.browser import Browser
+from src.lib.browser import Browser
 from src.choice_dtc.census import Census
 from src.choice_dtc.demographics import Demographics
+from src.choice_dtc.modal import Modal
 from src.choice_dtc.quotes import Quotes
 from src.utils.util import compare_values
 
-LOCATOR_TYPE = ['css selector', 'xpath', 'id', 'name', 'class name', 'link text', 'partial link text']
+LOCATOR_TYPE = ["css selector", "xpath", "id", "name", "class name", "link text", "partial link text"]
 
 
 class ChoiceDTCActions:
@@ -22,20 +24,21 @@ class ChoiceDTCActions:
         self.census = Census(self.test_name, self.driver)
         self.demographics = Demographics(self.test_name, self.driver)
         self.quotes = Quotes(self.test_name, self.driver)
+        self.modal = Modal(self.test_name, self.driver)
 
     def get_url(self, page_title: str, url: str, clear_cookie: bool = True) -> None:
         """Open an absolute URL."""
         self.browser.get_url(page_title, url, clear_cookie)
 
-    def click(self, element_description: str, element_value: str, locator_type: str = 'css selector') -> None:
+    def click(self, element_description: str, element_value: str, locator_type: str = "css selector") -> None:
         """Performs a click operation on the element."""
         self.browser.click(element_description, element_value, locator_type)
 
-    def double_click(self, element_description: str, element_value: str, locator_type: str = 'css selector') -> None:
+    def double_click(self, element_description: str, element_value: str, locator_type: str = "css selector") -> None:
         """Performs a double click operation on the element."""
         self.browser.double_click(element_description, element_value, locator_type)
 
-    def enter(self, data: str, web_element: str, mask: bool = False, locator_type: str = 'css selector'):
+    def enter(self, data: str, web_element: str, mask: bool = False, locator_type: str = "css selector"):
         """ Performs a send_keys operation on the element."""
         self.browser.enter(data, web_element, mask, locator_type)
 
@@ -47,28 +50,26 @@ class ChoiceDTCActions:
         """ Waits for timeout seconds"""
         self.browser.wait(timeout)
 
-    def verify_page_loaded(self, page_description: str, page_title: str,
-                           timeout: int = 30) -> None:
+    def verify_page_loaded(self, page_description: str, page_title: str, timeout: int = 30) -> None:
         self.browser.verify_page_is_displayed(page_description, page_title, timeout)
 
-    def verify_modal_displayed(self, insurance_type: str, modal_title: str = None,
-                               timeout: int = 30) -> None:
+    def verify_modal_displayed(self, insurance_type: str, modal_title: str = None, timeout: int = 30) -> None:
         """Verifies that a modal is displayed."""
 
         # STM and supplemental doesn't have modals
-        if 'short term' in insurance_type.lower() or 'supplemental' in insurance_type.lower():
+        if "short term" in insurance_type.lower() or "supplemental" in insurance_type.lower():
             return
-        self.browser.is_modal_displayed(modal_title, timeout)
+        self.modal.is_modal_displayed(modal_title, timeout)
 
     def close_modal(self, insurance_type: str) -> None:
         """Closes the modal."""
 
         # STM and supplemental doesn't have modals
-        if 'short term' in insurance_type.lower() or 'supplemental' in insurance_type.lower():
+        if "short term" in insurance_type.lower() or "supplemental" in insurance_type.lower():
             return
-        self.browser.close_modal()
+        self.modal.close_modal()
 
-    def switch(self, frame_description: str, frame_value: str, locator_type: str = 'css selector') -> None:
+    def switch(self, frame_description: str, frame_value: str, locator_type: str = "css selector") -> None:
         # TODO: Implement switching of tabs
         pass
 
@@ -76,26 +77,45 @@ class ChoiceDTCActions:
         """Ensures Census page is at default state"""
         self.census.lob_default_state(driver)
 
-    def input_demographics(self, insurance_type: str, phone: str = None, email: str = None,
-                           first_name: str = None, last_name: str = None,
-                           date_of_birth: str = None, gender: str = None,
-                           tobacco: str = None, parent: str = None,
-                           annual_income: str = None, household_members: str = None,
-                           medicare_coverage_year: str = None, locator_type: str = 'xpath') -> None:
+    def input_demographics(
+        self,
+        insurance_type: str,
+        phone: Optional[str],
+        email: str = None,
+        first_name: str = None,
+        last_name: str = None,
+        date_of_birth: str = None,
+        gender: str = None,
+        tobacco: str = None,
+        parent: str = None,
+        annual_income: str = None,
+        household_members: str = None,
+        medicare_coverage_year: str = None,
+        locator_type: str = "xpath",
+    ) -> None:
         """
-        Input demographics details 
+        Input demographics details
         """
-        log = getLogger(f'{self.test_name}.input_demographics')
-        log.info(f'Inputting demographics for {insurance_type}')
+        log = getLogger(f"{self.test_name}.input_demographics")
+        log.info(f"Inputting demographics for {insurance_type}")
         if locator_type not in LOCATOR_TYPE:
-            log.error(f'Locator type: {locator_type} is invalid. Valid values: {LOCATOR_TYPE}')
-            assert False, f'Locator type: {locator_type} is invalid. Valid values: {LOCATOR_TYPE}'
-        self.demographics.fill_out_details(insurance_type, phone=phone, email=email, first_name=first_name,
-                                           last_name=last_name, date_of_birth=date_of_birth, gender=gender,
-                                           tobacco=tobacco, parent=parent, annual_income=annual_income,
-                                           household_members=household_members,
-                                           medicare_coverage_year=medicare_coverage_year,
-                                           locator_type=locator_type)
+            log.error(f"Locator type: {locator_type} is invalid. Valid values: {LOCATOR_TYPE}")
+            assert False, f"Locator type: {locator_type} is invalid. Valid values: {LOCATOR_TYPE}"
+        self.demographics.fill_out_details(
+            insurance_type,
+            phone=phone,
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            date_of_birth=date_of_birth,
+            gender=gender,
+            tobacco=tobacco,
+            parent=parent,
+            annual_income=annual_income,
+            household_members=household_members,
+            medicare_coverage_year=medicare_coverage_year,
+            locator_type=locator_type,
+        )
 
     def verify_text(self, text: str, description: str = None, timeout: int = 20) -> None:
         """Verifies that the text is present in the page."""
@@ -115,11 +135,7 @@ class ChoiceDTCActions:
 
     def select_county(self, county: str, county_selection: str, timeout: int = 10) -> None:
         """Checks if county selection is displayed and selects county"""
-        self.browser.select_county(county, county_selection, timeout)
-
-    def get_most_popular_plans(self, plan_name: str, file_name: str, timeout: int = 30) -> None:
-        """Gets the images of the most popular plans and save it in the images directory"""
-        self.quotes.get_most_popular_plans(plan_name, file_name, timeout)
+        self.census.select_county(county, county_selection, timeout)
 
     def get_plan_with_popular_ribbon(self, timeout: int = 30) -> None:
         """Gets the images of the plans with popular ribbon and save it in the images directory"""

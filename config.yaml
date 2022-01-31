@@ -1,0 +1,12 @@
+
+browser:
+  name: chrome
+  headless: false
+  size: ~
+  extensions: false
+  gpu: true
+
+device: ~
+environment: model
+execution_mode: local
+log_level: INFO
