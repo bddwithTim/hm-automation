@@ -1,5 +1,4 @@
 from logging import getLogger
-from typing import Optional, Any
 from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.keys import Keys
@@ -33,18 +32,18 @@ class Demographics:
         self,
         insurance_type: str,
         locator_type: str,
-        phone: Optional[str],
-        email: Optional[str],
-        first_name: Optional[str],
-        last_name: Optional[str],
-        date_of_birth: Optional[str],
-        gender: Optional[str],
-        tobacco: Optional[str],
-        parent: Optional[str],
-        annual_income: Optional[str],
-        household_members: Optional[str],
-        medicare_coverage_year: Optional[str],
-    ) -> Any:
+        phone: str = None,
+        email: str = None,
+        first_name: str = None,
+        last_name: str = None,
+        date_of_birth: str = None,
+        gender: str = None,
+        tobacco: str = None,
+        parent: str = None,
+        annual_income: str = None,
+        household_members: str = None,
+        medicare_coverage_year: str = None,
+    ) -> None:
         self.phone_number = phone
         self.email = email
         self.first_name = first_name
