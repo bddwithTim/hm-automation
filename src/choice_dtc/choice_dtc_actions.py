@@ -1,5 +1,4 @@
 from logging import getLogger
-from typing import Optional
 
 from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -80,7 +79,7 @@ class ChoiceDTCActions:
     def input_demographics(
         self,
         insurance_type: str,
-        phone: Optional[str],
+        phone: str = None,
         email: str = None,
         first_name: str = None,
         last_name: str = None,
