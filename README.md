@@ -46,16 +46,17 @@ browser:
 Prerequisites:
 
 * [Poetry 1.0.0+](https://github.com/python-poetry/poetry)
-  * Windows: `pip install poetry`
+
+Refer to hm-automation setup document to setup poetry. [poetry](https://github.com/python-poetry/poetry) is a tool to handle dependency installation as well as building and packaging of Python packages. It only needs one file to do all of that: the new, [standardized](https://www.python.org/dev/peps/pep-0518/) `pyproject.toml`.
+
+In other words, poetry uses pyproject.toml to replace `setup.py`, `requirements.txt`, `setup.cfg`, `MANIFEST.in` and the newly added `Pipfile`.
 
 After cloning, prepare your development environment like so:
 
 * Set up a Python virtual environment: `poetry install`
 * Activate the pre-commit hooks: `poetry run pre-commit install`
 
-[poetry](https://github.com/python-poetry/poetry) is a tool to handle dependency installation as well as building and packaging of Python packages. It only needs one file to do all of that: the new, [standardized](https://www.python.org/dev/peps/pep-0518/) `pyproject.toml`.
 
-In other words, poetry uses pyproject.toml to replace `setup.py`, `requirements.txt`, `setup.cfg`, `MANIFEST.in` and the newly added `Pipfile`.
 
 After cloning this repository, prepare your development environment like so:
 
