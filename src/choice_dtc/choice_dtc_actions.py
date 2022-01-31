@@ -6,6 +6,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from src.lib.browser import Browser
 from src.choice_dtc.census import Census
 from src.choice_dtc.demographics import Demographics
+from src.choice_dtc.image import ChoiceDTCImage
 from src.choice_dtc.modal import Modal
 from src.choice_dtc.quotes import Quotes
 from src.utils.util import compare_values
@@ -22,8 +23,9 @@ class ChoiceDTCActions:
         self.browser = Browser(self.test_name, self.driver)
         self.census = Census(self.test_name, self.driver)
         self.demographics = Demographics(self.test_name, self.driver)
-        self.quotes = Quotes(self.test_name, self.driver)
+        self.image = ChoiceDTCImage(self.test_name, self.driver)
         self.modal = Modal(self.test_name, self.driver)
+        self.quotes = Quotes(self.test_name, self.driver)
 
     def get_url(self, page_title: str, url: str, clear_cookie: bool = True) -> None:
         """Open an absolute URL."""
@@ -151,3 +153,7 @@ class ChoiceDTCActions:
     def verify_plan_id(self, plan_id: str) -> None:
         """ Verifies the correct plan id is selected """
         self.quotes.verify_plan_id(plan_id)
+
+    def verify_image(self, file_name: str, image_element: str, locator_type: str = "xpath", timeout: int = 30) -> bool:
+        """Verify whether the image is the same as the image from the file"""
+        self.image.validate_image(file_name, image_element, locator_type, timeout)

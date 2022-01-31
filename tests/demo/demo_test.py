@@ -3,7 +3,7 @@ import src.lib.log as logger
 import pytest
 
 from src.choice_dtc.choice_dtc_actions import ChoiceDTCActions
-from src.utils.util import get_config, read_xls, parse_str
+from src.utils.util import get_config, get_file_path, read_xls, parse_str
 
 
 @pytest.mark.regression
@@ -88,3 +88,31 @@ def test_selecting_a_specific_plan(test_id, app_type, zip_code, prod_type, plan,
     acts.select_plan(plan_name=plan, action=action)
     # acts.verify_text(description="Add to cart modal", text="Great! You've added a  plan to your cart.")
     # acts.click("Go to my cart button", "//p[text() = 'Go to My Cart']", locator_type='xpath')
+
+
+@pytest.mark.ui
+def test_demo_ui(driver, request):
+    name = request.node.name
+    logger.setup_logger(name, f"{name}.log")
+    log = logging.getLogger(name)
+    log.info("Test Case Logging Start")
+
+    data = get_config("choice_dtc.yaml")
+    test = get_config("config.yaml")
+    acts = ChoiceDTCActions(request.node.name, driver)
+
+    acts.get_url("HealthMarket's shop site", data["choice_dtc_sites"][test["environment"]]["url"])
+    # HealthMarket's shop site default logo in the header
+    acts.verify_image(
+        file_name=get_file_path("health_markets_header_logo.png"),
+        image_element="//img[@class= 'desktop-app-logo']",
+        locator_type="xpath",
+        timeout=15,
+    )
+    # HealthMarket's shop site default logo in the footer
+    acts.verify_image(
+        file_name=get_file_path("health_markets_footer_logo.png"),
+        image_element="//img[contains(@id, 'footer-logo')]",
+        locator_type="xpath",
+        timeout=15,
+    )

@@ -1,14 +1,14 @@
 choice_dtc_sites:
-  dtc-model:
+  model:
     url: "https://shop.model.healthmarkets.com/
     en?Token=d672d103-d73c-4110-baef-4196a7cf9625"
-  dtc-supp:
+  supp:
       url: "https://shop-supp.healthmarkets.com/
       en?Token=6bf27db3-3054-4abf-b2b3-150e966b6866"
-  dtc-model-mercer:
+  model-mercer:
       url: "https://shop.model.healthmarkets.com/
       en?Token=d672d103-d73c-4110-baef-4196a7cf9625&branding=mercer"
-  dtc-supp-mercer:
+  supp-mercer:
       url: "https://shop-supp.healthmarkets.com/
       en?Token=6bf27db3-3054-4abf-b2b3-150e966b6866&branding=mercer"
 
