@@ -20,10 +20,10 @@ def setup_logger(logger_name, log_file, rotate=False, stream=True):
 
     if rotate:
         file_handler = logging.handlers.RotatingFileHandler(
-            r".\logs\\{}".format(log_file), mode="w", maxBytes=1 * 1024 * 1024, backupCount=3
+            f"{log_directory}\\{log_file}", mode="w", maxBytes=1 * 1024 * 1024, backupCount=3
         )
     else:
-        file_handler = logging.FileHandler(r".\logs\\{}".format(log_file), mode="w")
+        file_handler = logging.FileHandler(f"{log_directory}\\{log_file}", mode="w")
 
     file_handler.setFormatter(formatter)
 
