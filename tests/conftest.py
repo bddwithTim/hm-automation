@@ -29,8 +29,11 @@ def pytest_runtest_makereport(item):
 
 
 def pytest_cmdline_preparse(args):
+    data = get_config("config.yaml")
     # generates an html report using the pytest-html plugin
-    args.extend(["--html", f'./reports/report_{datetime.today().strftime("%Y-%m-%d_%H-%M-%S")}.html'])
+    args.extend(
+        ["--html", f'{data["directory"]["reports"]}/report_{datetime.today().strftime("%Y-%m-%d_%H-%M-%S")}.html']
+    )
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -43,8 +46,12 @@ def test_failed_check(request):
 
 
 def _capture_screenshot(driver, node_name):
+    # initialize the directory for the screenshots
+    directory = get_config("config.yaml")["directory"]["screenshots"]
+    if not os.path.exists(directory):
+        os.makedirs(directory)
     file_name = f'{node_name}_{datetime.today().strftime("%Y-%m-%d_%H-%M-%S")}.png'
-    failed_tests_dir = "./screenshots/failed_tests"
+    failed_tests_dir = f"{directory}/failed_tests"
     if not os.path.exists(failed_tests_dir):
         os.mkdir(failed_tests_dir)
     driver.save_screenshot(f"{failed_tests_dir}/{file_name}")

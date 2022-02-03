@@ -1,3 +1,5 @@
+import os
+
 import logging
 import logging.handlers
 
@@ -5,7 +7,11 @@ from src.utils.util import get_config
 
 
 def setup_logger(logger_name, log_file, rotate=False, stream=True):
-    data = get_config("config.yaml")
+    config = get_config("config.yaml")
+    log_directory = config["directory"]["logs"]
+
+    if not os.path.exists(log_directory):
+        os.mkdir(log_directory)
 
     log = logging.getLogger(logger_name)
     formatter = logging.Formatter(
@@ -21,7 +27,7 @@ def setup_logger(logger_name, log_file, rotate=False, stream=True):
 
     file_handler.setFormatter(formatter)
 
-    level = getattr(logging, data["log_level"])
+    level = getattr(logging, config["log_level"])
     log.setLevel(level)
     log.addHandler(file_handler)
 

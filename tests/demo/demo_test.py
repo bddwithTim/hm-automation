@@ -104,15 +104,15 @@ def test_demo_ui(driver, request):
     acts.get_url("HealthMarket's shop site", data["choice_dtc_sites"][test["environment"]]["url"])
     # HealthMarket's shop site default logo in the header
     acts.verify_image(
-        file_name=get_file_path("health_markets_header_logo.png"),
+        file_name=get_file_path("health_markets_footer_logo.png"),
         image_element="//img[@class= 'desktop-app-logo']",
         locator_type="xpath",
         timeout=15,
     )
     # HealthMarket's shop site default logo in the footer
-    acts.verify_image(
-        file_name=get_file_path("health_markets_footer_logo.png"),
-        image_element="//img[contains(@id, 'footer-logo')]",
-        locator_type="xpath",
-        timeout=15,
-    )
+    # acts.verify_image(
+    #     file_name=get_file_path("health_markets_footer_logo.png"),
+    #     image_element="//img[contains(@id, 'footer-logo')]",
+    #     locator_type="xpath",
+    #     timeout=15,
+    # )

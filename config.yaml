@@ -10,3 +10,8 @@ device: ~
 environment: model
 execution_mode: local
 log_level: INFO
+
+directory:
+  logs: logs
+  screenshots: screenshots
+  reports: reports
