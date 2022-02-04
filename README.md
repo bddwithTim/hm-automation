@@ -40,7 +40,7 @@ There are 2 configurations for this project:
 * `config.yaml` - contains the generic configuration for the project.
 * `choice_dtc.yaml` - contains the specific configuration for the choice-dtc domain.
 
-`config.yaml`
+#### `config.yaml`
 * `browser:` General browser settings.
   * `name:` String. The name of the browser to use (e.g., `chrome`).
   * `headless:` Boolean. Whether to run the browser in headless mode.
@@ -59,7 +59,7 @@ There are 2 configurations for this project:
   * `screenshots:` String. Screenshots directory.
   
 
-`choice_dtc.yaml`
+#### `choice_dtc.yaml`
 * `choice_dtc_site:` List of strings. The list of DTC sites to test.
   * `model:` String. Model Test environment.
   * `url:` String. Required. Base url of the model environment.
@@ -91,9 +91,13 @@ browser:
    ```
    
 * Executing tests which match the given substring expression. `pytest -k expression`.  An expression is a python evaluatable expression where all names are substring-matched against test names and their parent classes.
+  * executes all tests under the python file `demo_test.py`
   ```console
-  pytest -k demo_test.py //executes all the test under the python file `demo_test.py`
-  pytest -k test_demo_ui //executes the test function `test_demo_ui`
+  pytest -k demo_test.py
+  ```
+  * executes the test function named `test_demo_ui`
+  ```console
+  pytest -k test_demo_ui
   ```
 
 * Executing all tests under a directory.
