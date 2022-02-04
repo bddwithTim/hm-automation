@@ -25,14 +25,14 @@ After cloning this github repository, prepare your development environment like 
 
      ![Poetry Package](https://user-images.githubusercontent.com/89407715/152507704-7dd657fe-9716-4347-9c08-98a03a53cfba.png)
 
-* Open a cmd/bash terminal(Alt+f12) in PyCharm and execute:
-```console
-poetry install
-```
+* Open a cmd/bash terminal `Alt+F12` in PyCharm and execute:
+  ```console
+  poetry install
+  ```
 * Activate the pre-commit hooks:
-```console
-poetry run pre-commit install
-```
+  ```console
+  poetry run pre-commit install
+  ```
 
 ## Configuration
 
@@ -78,7 +78,29 @@ browser:
 
 ## Test Execution
 
-* `pytest -m tag_name` - collects tests having the tag/mark `tag_name` e.g., _smoke_, _regression_, _ui_, etc...
-* `pytest -m tag_name -n x` - where x is the number of tests for parallel testing
-* `pytest -k test_name` - `test_name` can be any of the following: function/class/module names
-* `pytest /tests` - executes all tests under the `/tests` directory
+* Executing tests matching given mark expression. `pytest -m MARKEXPR` - sample **MARKEXPR** _e.g., smoke, regression, ui, etc..._
+   ```console
+   pytest -m smoke
+   pytest -m "smoke and ui"
+   pytest -m "regression or ui"
+   ```
+   
+* Executing parallel tests. `pytest -n <num>` where `<num>` is the number of test instances.
+   ```console
+   pytest -m smoke -n 3
+   ```
+   
+* Executing tests which match the given substring expression. `pytest -k expression`.  An expression is a python evaluatable expression where all names are substring-matched against test names and their parent classes.
+  ```console
+  pytest -k demo_test.py //executes all the test under the python file `demo_test.py`
+  pytest -k test_demo_ui //executes the test function `test_demo_ui`
+  ```
+
+* Executing all tests under a directory.
+  ```console
+  pytest /tests
+  ```
+
+## Automation Constraints
+
+Currently the project doesn't support remote testing as of yet.
