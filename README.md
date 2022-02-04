@@ -25,8 +25,14 @@ After cloning this github repository, prepare your development environment like 
 
      ![Poetry Package](https://user-images.githubusercontent.com/89407715/152507704-7dd657fe-9716-4347-9c08-98a03a53cfba.png)
 
-* Open a cmd/bash terminal(Alt+f12) in PyCharm and execute: `poetry install`
-* Activate the pre-commit hooks: `poetry run pre-commit install`
+* Open a cmd/bash terminal(Alt+f12) in PyCharm and execute:
+```console
+poetry install
+```
+* Activate the pre-commit hooks:
+```console
+poetry run pre-commit install
+```
 
 ## Configuration
 
