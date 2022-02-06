@@ -3,7 +3,7 @@ import src.lib.log as logger
 import pytest
 
 from src.choice_dtc.choice_dtc_actions import ChoiceDTCActions
-from src.utils.util import get_config, get_file_path, read_xls, parse_str
+from src.utils.utils import get_config, read_xls, parse_str
 
 
 @pytest.mark.regression
@@ -12,7 +12,7 @@ from src.utils.util import get_config, get_file_path, read_xls, parse_str
     " dob, gender, tobacco, parent, plan",
     read_xls("demo_lob.xlsx"),
 )
-def test_demo(
+def test_demo_lob(
     test_id,
     app_type,
     zip_code,
@@ -63,8 +63,8 @@ def test_demo(
 
 
 @pytest.mark.smoke
-@pytest.mark.parametrize("test_id, app_type, zip_code, prod_type, plan, action", read_xls("demo_smoke.xlsx"))
-def test_selecting_a_specific_plan(test_id, app_type, zip_code, prod_type, plan, action, driver, request):
+@pytest.mark.parametrize("test_id, app_type, zip_code, prod_type, plan, action", read_xls("demo_plan.xlsx"))
+def test_demo_selecting_specific_plan(test_id, app_type, zip_code, prod_type, plan, action, driver, request):
     name = request.node.name
     logger.setup_logger(name, f"{name}.log")
     log = logging.getLogger(name)
@@ -86,8 +86,6 @@ def test_selecting_a_specific_plan(test_id, app_type, zip_code, prod_type, plan,
     acts.verify_modal_displayed(prod_type, timeout=500)
     acts.close_modal(prod_type)
     acts.select_plan(plan_name=plan, action=action)
-    # acts.verify_text(description="Add to cart modal", text="Great! You've added a  plan to your cart.")
-    # acts.click("Go to my cart button", "//p[text() = 'Go to My Cart']", locator_type='xpath')
 
 
 @pytest.mark.ui
@@ -104,15 +102,15 @@ def test_demo_ui(driver, request):
     acts.get_url("HealthMarket's shop site", data["choice_dtc_sites"][test["environment"]]["url"])
     # HealthMarket's shop site default logo in the header
     acts.verify_image(
-        file_name=get_file_path("health_markets_footer_logo.png"),
+        file_name="desktop_hm_header_logo.png",
         image_element="//img[@class= 'desktop-app-logo']",
         locator_type="xpath",
         timeout=15,
     )
     # HealthMarket's shop site default logo in the footer
-    # acts.verify_image(
-    #     file_name=get_file_path("health_markets_footer_logo.png"),
-    #     image_element="//img[contains(@id, 'footer-logo')]",
-    #     locator_type="xpath",
-    #     timeout=15,
-    # )
+    acts.verify_image(
+        file_name="desktop_hm_footer_logo.png",
+        image_element="//img[contains(@id, 'footer-logo')]",
+        locator_type="xpath",
+        timeout=15,
+    )

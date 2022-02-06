@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.keys import Keys
 
-from src.utils.util import get_config, parse_str, is_legal_age
+from src.utils.utils import get_config, parse_str, is_legal_age
 from src.lib.browser import Browser
 
 

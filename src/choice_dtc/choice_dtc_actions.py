@@ -9,7 +9,7 @@ from src.choice_dtc.demographics import Demographics
 from src.choice_dtc.image import ChoiceDTCImage
 from src.choice_dtc.modal import Modal
 from src.choice_dtc.quotes import Quotes
-from src.utils.util import compare_values
+from src.utils.utils import compare_values, get_file_path
 
 LOCATOR_TYPE = ["css selector", "xpath", "id", "name", "class name", "link text", "partial link text"]
 
@@ -142,10 +142,6 @@ class ChoiceDTCActions:
         """Gets the images of the plans with popular ribbon and save it in the images directory"""
         self.quotes.get_plan_with_popular_ribbon(timeout)
 
-    def get_plans(self, plan_name: str, file_name: str, timeout: int = 30) -> None:
-        """Gets the images of the plans and save it in the images directory"""
-        self.quotes.get_plans(plan_name, file_name, timeout)
-
     def compare(self, expected: str, actual: str) -> None:
         """ Compares the expected and actual values """
         compare_values(expected, actual)
@@ -154,6 +150,7 @@ class ChoiceDTCActions:
         """ Verifies the correct plan id is selected """
         self.quotes.verify_plan_id(plan_id)
 
-    def verify_image(self, file_name: str, image_element: str, locator_type: str = "xpath", timeout: int = 30) -> bool:
+    def verify_image(self, file_name: str, image_element: str, locator_type: str = "xpath", timeout: int = 30) -> None:
         """Verify whether the image is the same as the image from the file"""
-        self.image.validate_image(file_name, image_element, locator_type, timeout)
+        file_path = get_file_path(file_name)
+        self.image.validate_image(file_path, image_element, locator_type, timeout)

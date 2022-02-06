@@ -2,9 +2,6 @@
 browser:
   name: chrome
   headless: false
-  size: ~
-  extensions: false
-  gpu: true
 
 device: ~
 environment: model

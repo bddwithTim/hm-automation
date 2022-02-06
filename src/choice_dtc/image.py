@@ -1,7 +1,11 @@
 import time
 
+
 from io import BytesIO
-from PIL import Image, ImageChops
+from PIL import Image
+
+from logging import getLogger
+
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
@@ -26,21 +30,24 @@ class ChoiceDTCImage:
             raise ValueError("Web element cannot be None")
         self.browser.scroll_to_element(web_element)
         time.sleep(0.8)
-        return Image.open(BytesIO(web_element.screenshot_as_png))
+        return Image.open(BytesIO(bytes(web_element.screenshot_as_png)))
 
-    def save_image(self, image: Image, file_name: str) -> None:
-        # save image as png
-        image.save("./tests/data/images/" + file_name + ".png")
-
-    def are_images_equal(self, image1: Image, image2: Image) -> bool:
-        """
-        If the images are identical, all pixels
-        in the difference image are zero,
-        and the bounding box function returns None.
-        """
-        return ImageChops.difference(image1, image2).getbbox() is None
-
-    def validate_image(self, file_name: str, image_element: str, locator_type: str, timeout: int) -> bool:
+    def validate_image(self, file_path: str, image_element: str, locator_type: str, timeout: int) -> None:
+        log = getLogger(f"{self.test_name}.validate_image")
         image = self.browser.get_web_element(image_element, locator_type, timeout)
         captured_image = self.capture_image(image)
-        return self.are_images_equal(Image.open(file_name), captured_image)
+        if not self.are_images_equal(Image.open(file_path), captured_image):
+            log.error(f"The image in: '{file_path}' does not match the image in: `{image_element}`")
+            assert False, "Images are not identical"
+
+    @staticmethod
+    def are_images_equal(image1: Image, image2: Image) -> bool:
+        if image1.size != image2.size:
+            return False
+        image1_pixels = image1.load()
+        image2_pixels = image2.load()
+        for x in range(image1.size[0]):
+            for y in range(image1.size[1]):
+                if image1_pixels[x, y] != image2_pixels[x, y]:
+                    return False
+        return True

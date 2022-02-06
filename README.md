@@ -44,9 +44,6 @@ There are 2 configurations for this project:
 * `browser:` General browser settings.
   * `name:` String. The name of the browser to use (e.g., `chrome`).
   * `headless:` Boolean. Whether to run the browser in headless mode.
-  * `size:` String. Window dimensions in format `width,height` (e.g., `1920,1080`).
-  * `extensions:` Boolean. Whether to allow the use of installed extensions.
-  * `gpu:` Boolean. Whether to enable GPU acceleration.
 
 * `device:` String. The name of the device to use (e.g., `iPhone X`).
 * `environment`: String. Test environment to use (e.g., `model`, `supp`).
@@ -57,7 +54,7 @@ There are 2 configurations for this project:
   * `logs:` String. Logs directory.
   * `reports:` String. Reports directory.
   * `screenshots:` String. Screenshots directory.
-  
+
 
 #### `choice_dtc.yaml`
 * `choice_dtc_site:` List of strings. The list of DTC sites to test.
@@ -84,12 +81,12 @@ browser:
    pytest -m "smoke and ui"
    pytest -m "regression or ui"
    ```
-   
+
 * Executing parallel tests. `pytest -n <num>` where `<num>` is the number of test instances.
    ```console
    pytest -m smoke -n 3
    ```
-   
+
 * Executing tests which match the given substring expression. `pytest -k expression`.  An expression is a python evaluatable expression where all names are substring-matched against test names and their parent classes.
   * executes all tests under the python file `demo_test.py`
   ```console

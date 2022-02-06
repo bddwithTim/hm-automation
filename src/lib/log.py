@@ -3,7 +3,7 @@ import os
 import logging
 import logging.handlers
 
-from src.utils.util import get_config
+from src.utils.utils import get_config
 
 
 def setup_logger(logger_name, log_file, rotate=False, stream=True):

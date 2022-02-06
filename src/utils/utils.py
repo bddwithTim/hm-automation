@@ -1,15 +1,47 @@
 import os
 import re
+import copy
 import yaml
 import json
 import pandas as pd
 
+from enum import Enum
 from pathlib import Path
 from datetime import date, datetime
 from logging import getLogger
 
 
+class MergeStrategy(Enum):
+    DeleteKey = 0
+
+
+def deep_merge_dict(base: dict, addition: dict) -> dict:
+    """
+    Recursively merge dictionaries.
+
+    Values in `addition` can be set to a variant of `MergeStrategy`
+    to induce special behavior.
+    """
+    base = copy.deepcopy(base)
+
+    for key, value in addition.items():
+        if value == MergeStrategy.DeleteKey:
+            base.pop(key, None)
+        elif isinstance(value, dict) and key in base and isinstance(base[key], dict):
+            base[key] = deep_merge_dict(base.get(key, {}), value)
+        else:
+            base[key] = addition[key]
+    return base
+
+
 def get_config(file_name):
+    if file_name is None or file_name == "config.yaml":
+        override = Path(get_file_path("config.override.yaml"))
+        data = yaml.safe_load(Path(get_file_path("config.yaml")).read_text())
+        if override.exists():
+            data = deep_merge_dict(data, yaml.safe_load(override.read_text()))
+        return data
+    # if file_name is not None
     root = get_file_path(file_name)
     if file_name.endswith(".yaml"):
         with open(root, "r") as f:

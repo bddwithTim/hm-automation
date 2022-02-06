@@ -16,7 +16,7 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import TimeoutException
 
-from src.utils.util import get_config
+from src.utils.utils import get_config
 
 LOCATOR_TYPE = ["css selector", "xpath", "id", "name", "class name", "link text", "partial link text"]
 
@@ -174,15 +174,14 @@ class Browser:
             assert False, f"web element '{web_element}' not found within timeout: {timeout} second(s)"
 
 
-def get_driver(browser_name: str = "chrome", headless: bool = False) -> webdriver:
+def get_driver(browser_name: str) -> webdriver:
     data = get_config("config.yaml")
+    headless = data["browser"]["headless"]
     if browser_name == "chrome":
         chrome_options = ChromeOptions()
-        # chrome_options.add_argument("--incognito")
         chrome_options.add_argument("--start-maximized")
         chrome_options.add_argument("--disable-infobars")
         chrome_options.add_argument("--disable-extensions")
-        # set headless to True to run tests in headless mode
         if headless:
             chrome_options.add_argument("--headless")
             chrome_options.add_argument("--disable-gpu")

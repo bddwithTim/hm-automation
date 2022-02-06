@@ -3,14 +3,13 @@ import pytest
 
 from datetime import datetime
 from src.lib.browser import get_driver
-from src.utils.util import get_config
+from src.utils.utils import get_config
 
 
 @pytest.fixture(scope="session")
 def driver():
-    data = get_config("config.yaml")
-    browser = data["browser"]["name"]
-    web_driver = get_driver(browser, headless=False)
+    browser = get_config("config.yaml")["browser"]["name"]
+    web_driver = get_driver(browser)
     yield web_driver
     web_driver.quit()
 
