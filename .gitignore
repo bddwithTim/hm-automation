@@ -36,12 +36,9 @@ venv/
 .envrc
 *.log
 config.override.yaml
-cloud_reliability.txt
-leeroy.yaml
 coverage.xml
 junit-report.xml
 logs/
 screenshots/
 reports/
-tests/results/images/
 *.DS_Store
