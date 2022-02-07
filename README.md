@@ -111,4 +111,4 @@ Alternatively, if the commands on the terminal doesn't work due to Optum's restr
 ## Automation Constraints
 
 * Remote automation testing is not yet supported.
-* For image-based testing, the browser `size` configuration in config.yaml should be set to `1920,1080` or just set an empty value.
+* For image-based testing, the browser `size` configuration in config.yaml should be set to `1920,1080`.
