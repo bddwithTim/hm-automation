@@ -36,8 +36,9 @@ def deep_merge_dict(base: dict, addition: dict) -> dict:
 
 def get_config(file_name):
     if file_name is None or file_name == "config.yaml":
-        override = Path(get_file_path("config.override.yaml"))
-        data = yaml.safe_load(Path(get_file_path("config.yaml")).read_text())
+        root_dir = Path(__file__).parents[2]
+        data = yaml.safe_load((root_dir / "config.yaml").read_text())
+        override = root_dir / "config.override.yaml"
         if override.exists():
             data = deep_merge_dict(data, yaml.safe_load(override.read_text()))
         return data

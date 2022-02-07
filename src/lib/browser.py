@@ -177,11 +177,15 @@ class Browser:
 def get_driver(browser_name: str) -> webdriver:
     data = get_config("config.yaml")
     headless = data["browser"]["headless"]
+    window_size = data["browser"]["size"]
     if browser_name == "chrome":
         chrome_options = ChromeOptions()
-        chrome_options.add_argument("--start-maximized")
         chrome_options.add_argument("--disable-infobars")
         chrome_options.add_argument("--disable-extensions")
+        if window_size:
+            chrome_options.add_argument("--window-size={}".format(window_size))
+        else: chrome_options.add_argument("--start-maximized")
+
         if headless:
             chrome_options.add_argument("--headless")
             chrome_options.add_argument("--disable-gpu")

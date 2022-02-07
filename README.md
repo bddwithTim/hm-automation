@@ -44,6 +44,7 @@ There are 2 configurations for this project:
 * `browser:` General browser settings.
   * `name:` String. The name of the browser to use (e.g., `chrome`).
   * `headless:` Boolean. Whether to run the browser in headless mode.
+  * `size:` String. Window dimensions in format `width,height` (e.g., `1920,1080`)
 
 * `device:` String. The name of the device to use (e.g., `iPhone X`).
 * `environment`: String. Test environment to use (e.g., `model`, `supp`).

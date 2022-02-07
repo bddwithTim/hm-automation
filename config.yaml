@@ -2,6 +2,7 @@
 browser:
   name: chrome
   headless: false
+  size: 1920,1080
 
 device: ~
 environment: model
