@@ -1,6 +1,6 @@
 # DTC-HealthMarkets Automation Framework
 
-This project utilizes [pytest](https://docs.pytest.org/en/6.2.x/) framework for automation testing.
+This repository utilizes [pytest](https://docs.pytest.org/en/6.2.x/) framework for automation testing.
 
 ## Development
 ### Prerequisites:
@@ -36,8 +36,8 @@ After cloning this github repository, prepare your development environment like 
 
 ## Configuration
 
-There are 2 configurations for this project:
-* `config.yaml` - contains the generic configuration for the project.
+There are 2 configurations in this automation repository:
+* `config.yaml` - contains the generic configuration for the test automation.
 * `choice_dtc.yaml` - contains the specific configuration for the choice-dtc domain.
 
 #### `config.yaml`
@@ -100,10 +100,15 @@ browser:
 
 * Executing all tests under a directory.
   ```console
-  pytest /tests
+  pytest ./tests
   ```
+
+Alternatively, if the commands on the terminal doesn't work due to Optum's restrictions then utilize Pycharm's [Run/Debug Configuration](https://www.jetbrains.com/help/pycharm/run-debug-configuration-py-test.html) and add the sample arguments above inside the `Additional Arguments` text field.
+
+   ![pytest_run_debug_configurations](https://user-images.githubusercontent.com/89407715/152800014-7a6dbc20-8432-4875-8681-eae5c65b33c3.png)
+
 
 ## Automation Constraints
 
-Remote automation testing is currently not supported.
-For image-based testing, the browser `size` configuration in config.yaml should be set to `1920,1080`
+* Remote automation testing is not yet supported.
+* For image-based testing, the browser `size` configuration in config.yaml should be set to `1920,1080` or just set an empty value.
