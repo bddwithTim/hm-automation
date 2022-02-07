@@ -105,4 +105,5 @@ browser:
 
 ## Automation Constraints
 
-Currently the project doesn't support remote testing as of yet.
+Remote automation testing is currently not supported.
+For image-based testing, the browser `size` configuration in config.yaml should be set to `1920,1080`
