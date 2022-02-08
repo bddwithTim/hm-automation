@@ -2,6 +2,12 @@ import logging
 import src.lib.log as logger
 import pytest
 
+
+
+
+import os
+import time
+
 from src.choice_dtc.choice_dtc_actions import ChoiceDTCActions
 from src.utils.utils import get_config, read_xls, parse_str
 
@@ -114,3 +120,4 @@ def test_demo_ui(driver, request):
         locator_type="xpath",
         timeout=15,
     )
+    time.sleep(1)
