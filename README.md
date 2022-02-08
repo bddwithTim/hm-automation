@@ -42,9 +42,9 @@ There are 2 configurations in this automation repository:
 
 #### `config.yaml`
 * `browser:` General browser settings.
-  * `name:` String. The name of the browser to use (e.g., `chrome`).
+  * `name:` String. The name of the browser to use (e.g., `chrome`, `firefox`).
   * `headless:` Boolean. Whether to run the browser in headless mode.
-  * `size:` String. Window dimensions in format `width,height` (e.g., `1920,1080`)
+  * `size:` String. Window dimensions in format `width,height` (e.g., `1920,1080`). An empty value displays a maximized window.
 
 * `device:` String. The name of the device to use (e.g., `iPhone X`).
 * `environment`: String. Test environment to use (e.g., `model`, `supp`).
