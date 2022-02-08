@@ -39,15 +39,15 @@ class ChoiceDTCActions:
         """Performs a double click operation on the element."""
         self.browser.double_click(element_description, element_value, locator_type)
 
-    def enter(self, data: str, web_element: str, mask: bool = False, locator_type: str = "css selector"):
+    def enter(self, data: str, web_element: str, mask: bool = False, locator_type: str = "css selector") -> None:
         """ Performs a send_keys operation on the element."""
         self.browser.enter(data, web_element, mask, locator_type)
 
-    def hover(self, element_description: str, web_element: WebElement):
+    def hover(self, element_description: str, web_element: WebElement) -> None:
         """Performs a mouse hover operation on the element."""
         self.browser.hover(element_description, web_element)
 
-    def wait(self, timeout: float):
+    def wait(self, timeout: float) -> None:
         """ Waits for timeout seconds"""
         self.browser.wait(timeout)
 
@@ -74,7 +74,7 @@ class ChoiceDTCActions:
         # TODO: Implement switching of tabs
         pass
 
-    def lob_default_state(self, driver):
+    def lob_default_state(self, driver) -> None:
         """Ensures Census page is at default state"""
         self.census.lob_default_state(driver)
 
