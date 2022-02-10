@@ -16,7 +16,7 @@ jobs:
         python-version: "3.9.2"
     - name: Install dependencies
       run: |
-        pip install poetry@1.1.12
+        pip install 'poetry==1.1.12'
         poetry install
     - run: make
     - name: self test newly built action
