@@ -6,6 +6,11 @@ from src.choice_dtc.choice_dtc_actions import ChoiceDTCActions
 from src.utils.utils import get_config, read_xls, parse_str
 
 
+
+
+import time
+
+
 @pytest.mark.regression
 @pytest.mark.parametrize(
     "test_id, app_type, zip_code, prod_type, phone, email, first_name, last_name,"
