@@ -184,7 +184,8 @@ def get_driver(browser_name: str) -> webdriver:
         chrome_options.add_argument("--disable-extensions")
         if window_size:
             chrome_options.add_argument("--window-size={}".format(window_size))
-        else: chrome_options.add_argument("--start-maximized")
+        else:
+            chrome_options.add_argument("--start-maximized")
 
         if headless:
             chrome_options.add_argument("--headless")
