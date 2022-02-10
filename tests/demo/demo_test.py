@@ -114,4 +114,3 @@ def test_demo_ui(driver, request):
         locator_type="xpath",
         timeout=15,
     )
-
