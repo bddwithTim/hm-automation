@@ -14,6 +14,7 @@ repos:
   rev: 20.8b1
   hooks:
     - id: black
+      exclude: '/.venv/'
 - repo: local
   hooks:
     - id: flake8
