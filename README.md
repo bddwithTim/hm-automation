@@ -1,3 +1,5 @@
+[![ci](https://github.com/bddwithTim/hm-automation/actions/workflows/ci.yaml/badge.svg)](https://github.com/bddwithTim/hm-automation/actions/workflows/ci.yaml)
+
 # DTC-HealthMarkets Automation Framework
 
 This repository utilizes [pytest](https://docs.pytest.org/en/6.2.x/) framework for automation testing.
