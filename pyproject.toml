@@ -26,7 +26,8 @@ isort = "^5.10.1"
 [tool.black]
 line-length = 120
 [tool.black]
-exclude = '(\.eggs|\.git|\.hg|\.pytest_cache|\.mypy_cache|\.nox|\.tox|\.venv|_build|buck-out|build|dist|.*\/models\.py.*|.*\/models\/.*)'
+exclude = '(\.eggs|\.git|\.hg|\.pytest_cache|\.mypy_cache|\.nox|\.tox|\.venv|_build
+|buck-out|build|dist|.*\/models\.py.*|.*\/models\/.*)'
 
 [tool.pytest.ini_options]
 python_files = "*_test.py"
