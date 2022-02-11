@@ -9,7 +9,8 @@ from src.utils.utils import get_config, read_xls, rectify_zip_code, title_case
 
 @pytest.mark.fips_stm
 @pytest.mark.parametrize(
-    "zip_code, fips, state, county, county_selection, prod_name, plan_id", read_xls("stm_most_popular_plans.xlsx")
+    "zip_code, fips, state, county, county_selection, prod_name, plan_id",
+    read_xls("US3915674_stm_most_popular_plans.xlsx"),
 )
 def test_fips_stm(zip_code, fips, state, county, county_selection, prod_name, plan_id, driver, request):
     name = request.node.name

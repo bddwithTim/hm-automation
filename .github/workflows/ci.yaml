@@ -47,3 +47,4 @@ jobs:
     - run: |
         pytest --co
         pytest --setup-plan
+        poetry run pytest tests/unit --verbose
