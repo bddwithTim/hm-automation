@@ -1,6 +1,5 @@
-name: pull-request
-on:
-  pull_request:
+name: build
+on: [pull_request]
 
 jobs:
   create-virtualenv:
