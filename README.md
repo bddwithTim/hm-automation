@@ -1,4 +1,5 @@
 [![ci](https://github.com/bddwithTim/hm-automation/actions/workflows/ci.yaml/badge.svg)](https://github.com/bddwithTim/hm-automation/actions/workflows/ci.yaml)
+[![build](https://github.com/bddwithTim/hm-automation/actions/workflows/build.yaml/badge.svg)](https://github.com/bddwithTim/hm-automation/actions/workflows/build.yaml)
 
 # DTC-HealthMarkets Automation Framework
 
