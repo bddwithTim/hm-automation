@@ -32,7 +32,8 @@ jobs:
 
     - run: flake8
     - run: isort . --diff --check-only
-    - run: black --check --diff .
+    - run: black --check --diff
+
 
   tests:
     needs: create-virtualenv
