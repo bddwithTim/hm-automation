@@ -1,8 +1,6 @@
-name: CI
-
+name: pull-request
 on:
-  push:
-    branches: [main]
+  pull_request:
 
 jobs:
   create-virtualenv:
@@ -20,7 +18,6 @@ jobs:
         pip install 'poetry==1.1.12'
         poetry install
 
-
   linter:
     needs: create-virtualenv
     runs-on: ubuntu-latest
@@ -33,16 +30,3 @@ jobs:
     - run: flake8
     - run: isort . --diff --check-only
     - run: black --check --diff .
-
-  tests:
-    needs: create-virtualenv
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-python@v2
-    - uses: syphar/restore-virtualenv@v1
-      id: cache-virtualenv
-
-    - run: |
-        pytest --co
-        pytest --setup-plan
