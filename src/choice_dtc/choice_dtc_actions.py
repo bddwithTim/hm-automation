@@ -3,12 +3,12 @@ from logging import getLogger
 from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
 
-from src.lib.browser import Browser
 from src.choice_dtc.census import Census
 from src.choice_dtc.demographics import Demographics
 from src.choice_dtc.image import ChoiceDTCImage
 from src.choice_dtc.modal import Modal
 from src.choice_dtc.quotes import Quotes
+from src.lib.browser import Browser
 from src.utils.utils import compare_values, get_file_path
 
 LOCATOR_TYPE = ["css selector", "xpath", "id", "name", "class name", "link text", "partial link text"]

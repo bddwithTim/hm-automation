@@ -1,15 +1,15 @@
-from typing import List
 from logging import getLogger
+from typing import List
 
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support.ui import WebDriverWait
 
-from src.lib.browser import Browser
 from src.choice_dtc.image import ChoiceDTCImage
+from src.lib.browser import Browser
 
 
 class Quotes:

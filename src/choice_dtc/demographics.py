@@ -1,10 +1,11 @@
 from logging import getLogger
-from selenium import webdriver
-from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.common.keys import Keys
 
-from src.utils.utils import get_config, parse_str, is_legal_age
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.remote.webelement import WebElement
+
 from src.lib.browser import Browser
+from src.utils.utils import get_config, is_legal_age, parse_str
 
 
 class Demographics:

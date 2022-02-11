@@ -1,7 +1,6 @@
-import os
-
 import logging
 import logging.handlers
+import os
 
 from src.utils.utils import get_config
 

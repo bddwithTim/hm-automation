@@ -1,9 +1,10 @@
 import logging
-import src.lib.log as logger
+
 import pytest
 
+import src.lib.log as logger
 from src.choice_dtc.choice_dtc_actions import ChoiceDTCActions
-from src.utils.utils import get_config, read_xls, parse_str
+from src.utils.utils import get_config, parse_str, read_xls
 
 
 @pytest.mark.regression

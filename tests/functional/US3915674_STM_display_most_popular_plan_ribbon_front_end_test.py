@@ -1,10 +1,10 @@
 import logging
 
-import src.lib.log as logger
 import pytest
 
+import src.lib.log as logger
 from src.choice_dtc.choice_dtc_actions import ChoiceDTCActions
-from src.utils.utils import get_config, read_xls, title_case, rectify_zip_code
+from src.utils.utils import get_config, read_xls, rectify_zip_code, title_case
 
 
 @pytest.mark.fips_stm

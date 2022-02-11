@@ -1,7 +1,8 @@
 import os
+from datetime import datetime
+
 import pytest
 
-from datetime import datetime
 from src.lib.browser import get_driver
 from src.utils.utils import get_config
 

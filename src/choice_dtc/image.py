@@ -1,11 +1,8 @@
 import time
-
-
 from io import BytesIO
-from PIL import Image
-
 from logging import getLogger
 
+from PIL import Image
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
