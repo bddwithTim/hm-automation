@@ -40,7 +40,7 @@ class ChoiceDTCActions:
         self.browser.double_click(element_description, element_value, locator_type)
 
     def enter(self, data: str, web_element: str, mask: bool = False, locator_type: str = "css selector") -> None:
-        """ Performs a send_keys operation on the element."""
+        """Performs a send_keys operation on the element."""
         self.browser.enter(data, web_element, mask, locator_type)
 
     def hover(self, element_description: str, web_element: WebElement) -> None:
@@ -48,7 +48,7 @@ class ChoiceDTCActions:
         self.browser.hover(element_description, web_element)
 
     def wait(self, timeout: float) -> None:
-        """ Waits for timeout seconds"""
+        """Waits for timeout seconds"""
         self.browser.wait(timeout)
 
     def verify_page_loaded(self, page_description: str, page_title: str, timeout: int = 30) -> None:
@@ -143,11 +143,11 @@ class ChoiceDTCActions:
         self.quotes.get_plan_with_popular_ribbon(timeout)
 
     def compare(self, expected: str, actual: str) -> None:
-        """ Compares the expected and actual values """
+        """Compares the expected and actual values"""
         compare_values(expected, actual)
 
     def verify_plan_id(self, plan_id: str) -> None:
-        """ Verifies the correct plan id is selected """
+        """Verifies the correct plan id is selected"""
         self.quotes.verify_plan_id(plan_id)
 
     def verify_image(self, file_name: str, image_element: str, locator_type: str = "xpath", timeout: int = 30) -> None:
