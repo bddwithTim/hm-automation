@@ -6,6 +6,7 @@ import src.lib.log as logger
 from src.choice_dtc.choice_dtc_actions import ChoiceDTCActions
 from src.utils.utils import get_config, parse_str, read_xls
 
+import time
 
 @pytest.mark.regression
 @pytest.mark.parametrize(
