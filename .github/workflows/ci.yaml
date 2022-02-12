@@ -31,7 +31,7 @@ jobs:
       id: cache-virtualenv
 
     - name: pre-commit
-    - run: |
+      run: |
         pre-commit run check-json
         pre-commit run check-yaml
         pre-commit run trailing-whitespace
