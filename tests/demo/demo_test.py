@@ -6,7 +6,6 @@ from src.utils.utils import get_config, parse_str, read_xls
 import src.lib.log as logger
 
 
-
 @pytest.mark.regression
 @pytest.mark.parametrize(
     "test_id, app_type, zip_code, prod_type, phone, email, first_name, last_name,"
