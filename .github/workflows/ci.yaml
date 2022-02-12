@@ -30,9 +30,15 @@ jobs:
     - uses: syphar/restore-virtualenv@v1
       id: cache-virtualenv
 
-    - run: flake8
-    - run: isort . --diff --check-only
-    - run: black -v --check --diff .
+    - run: |
+        pre-commit run check-json
+        pre-commit run check-yaml
+        pre-commit run trailing-whitespace
+        pre-commit run end-of-file-fixer
+        pre-commit run forbid-tabs
+        flake8
+        isort . --diff --check-only
+        black -v --check --diff .
 
 
   tests:
