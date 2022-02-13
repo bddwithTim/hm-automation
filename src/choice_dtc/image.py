@@ -43,8 +43,6 @@ class ChoiceDTCImage:
             return False
         image1_pixels = image1.load()
         image2_pixels = image2.load()
-        for x in range(image1.size[0]):
-            for y in range(image1.size[1]):
-                if image1_pixels[x, y] != image2_pixels[x, y]:
-                    return False
-        return True
+        return all(
+            image1_pixels[x, y] == image2_pixels[x, y] for x, y in zip(range(image1.size[0]), range(image1.size[1]))
+        )
