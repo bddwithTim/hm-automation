@@ -1,8 +1,5 @@
-name: CI
-
-on:
-  push:
-    branches: [main]
+name: build
+on: [pull_request]
 
 jobs:
   create-virtualenv:
@@ -44,20 +41,3 @@ jobs:
         flake8
         isort . --diff --check-only
         black -v --check --diff .
-
-
-  tests:
-    needs: create-virtualenv
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
-    - uses: syphar/restore-virtualenv@v1
-      id: cache-virtualenv
-
-    - run: |
-        pytest --co
-        pytest --setup-plan
-        poetry run pytest tests/unit --verbose
