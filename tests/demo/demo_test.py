@@ -1,13 +1,11 @@
 import logging
 
-
-
-
 import src.lib.log as logger
 from src.choice_dtc.choice_dtc_actions import ChoiceDTCActions
 from src.utils.utils import get_config, parse_str, read_xls
 
 import pytest
+
 
 @pytest.mark.regression
 @pytest.mark.parametrize(
@@ -16,21 +14,21 @@ import pytest
     read_xls("demo_lob.xlsx"),
 )
 def test_demo_lob(
-    test_id,
-    app_type,
-    zip_code,
-    prod_type,
-    phone,
-    email,
-    first_name,
-    last_name,
-    dob,
-    gender,
-    tobacco,
-    parent,
-    plan,
-    driver,
-    request,
+        test_id,
+        app_type,
+        zip_code,
+        prod_type,
+        phone,
+        email,
+        first_name,
+        last_name,
+        dob,
+        gender,
+        tobacco,
+        parent,
+        plan,
+        driver,
+        request,
 ):
     name = request.node.name
     logger.setup_logger(name, f"{name}.log")
@@ -117,7 +115,3 @@ def test_demo_ui(driver, request):
         locator_type="xpath",
         timeout=15,
     )
-
-
-
-
