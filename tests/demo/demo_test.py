@@ -1,11 +1,13 @@
 import logging
 
-import pytest
+
+
 
 import src.lib.log as logger
 from src.choice_dtc.choice_dtc_actions import ChoiceDTCActions
 from src.utils.utils import get_config, parse_str, read_xls
 
+import pytest
 
 @pytest.mark.regression
 @pytest.mark.parametrize(
@@ -115,3 +117,7 @@ def test_demo_ui(driver, request):
         locator_type="xpath",
         timeout=15,
     )
+
+
+
+
