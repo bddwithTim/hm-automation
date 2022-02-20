@@ -9,6 +9,8 @@ from pathlib import Path
 
 import pandas as pd
 import yaml
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
 
 class MergeStrategy(Enum):
@@ -123,10 +125,8 @@ def get_age(date_of_birth: str) -> int:
 
 
 def is_legal_age(date_of_birth: str) -> bool:
-    """
-    Federal age limit is 21 years old.
-    """
-    return get_age(date_of_birth.replace("-", "/")) < 21
+    """Federal age limit is 21 years old."""
+    return get_age(date_of_birth.replace("-", "/")) > 21
 
 
 def parse_str(string):
@@ -143,13 +143,15 @@ def title_case(string):
 
 
 def _is_pascal_case(string) -> bool:
-    # accepts a string and checks if the string is in pascal case
-    # pascal case: 'PascalCase'
+    """
+    Accepts a string and checks if the string is in pascal case.
+    pascal case: 'PascalCase'
+    """
     return string != string.lower() and string != string.upper() and " " not in string
 
 
 def rectify_zip_code(zip_code: str) -> str:
-    # if zip_code is less than 5 digits, add zeros to the front
+    # if zip_code is less than 5 digits, add leading zeros
     if len(zip_code) < 5:
         return "0" * (5 - len(zip_code)) + zip_code
     return zip_code
@@ -161,3 +163,11 @@ def compare_values(value, value_2) -> None:
         log.error(f"Values do not match: {value} != {value_2}")
         assert False, ValueError(f"Values do not match: {value} != {value_2}")
     log.info(f"Values match: {value} == {value_2}")
+
+
+def clear_input_fields(driver: webdriver) -> None:
+    # clears the remaining data in the text fields if any from previous test
+    web_elements = driver.find_elements_by_xpath('//input[@type="text" or @type="email" or @type="tel"]')
+    for element in web_elements:
+        # As element.clear() does not work, we utilize `Keys` instead
+        element.send_keys(f"{Keys.CONTROL}A{Keys.DELETE}")
