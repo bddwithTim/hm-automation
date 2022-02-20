@@ -1,10 +1,15 @@
-from logging import getLogger
-
 from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
 
 from src.choice_dtc.census import Census
-from src.choice_dtc.demographics import Demographics
+from src.choice_dtc.demographics import (
+    ACAHealthDemographics,
+    DentalDemographics,
+    MedicareDemographics,
+    ShortTermMedicalDemographics,
+    SupplementalDemographics,
+    VisionDemographics,
+)
 from src.choice_dtc.image import ChoiceDTCImage
 from src.choice_dtc.modal import Modal
 from src.choice_dtc.quotes import Quotes
@@ -22,7 +27,6 @@ class ChoiceDTCActions:
         self.driver = driver
         self.browser = Browser(self.test_name, self.driver)
         self.census = Census(self.test_name, self.driver)
-        self.demographics = Demographics(self.test_name, self.driver)
         self.image = ChoiceDTCImage(self.test_name, self.driver)
         self.modal = Modal(self.test_name, self.driver)
         self.quotes = Quotes(self.test_name, self.driver)
@@ -78,45 +82,29 @@ class ChoiceDTCActions:
         """Ensures Census page is at default state"""
         self.census.lob_default_state(driver)
 
-    def input_demographics(
-        self,
-        insurance_type: str,
-        phone: str = None,
-        email: str = None,
-        first_name: str = None,
-        last_name: str = None,
-        date_of_birth: str = None,
-        gender: str = None,
-        tobacco: str = None,
-        parent: str = None,
-        annual_income: str = None,
-        household_members: str = None,
-        medicare_coverage_year: str = None,
-        locator_type: str = "xpath",
-    ) -> None:
-        """
-        Input demographics details
-        """
-        log = getLogger(f"{self.test_name}.input_demographics")
-        log.info(f"Inputting demographics for {insurance_type}")
-        if locator_type not in LOCATOR_TYPE:
-            log.error(f"Locator type: {locator_type} is invalid. Valid values: {LOCATOR_TYPE}")
-            assert False, f"Locator type: {locator_type} is invalid. Valid values: {LOCATOR_TYPE}"
-        self.demographics.fill_out_details(
-            insurance_type,
-            phone=phone,
-            email=email,
-            first_name=first_name,
-            last_name=last_name,
-            date_of_birth=date_of_birth,
-            gender=gender,
-            tobacco=tobacco,
-            parent=parent,
-            annual_income=annual_income,
-            household_members=household_members,
-            medicare_coverage_year=medicare_coverage_year,
-            locator_type=locator_type,
-        )
+    def input_demographics(self, lob_type: str, **kwargs) -> None:
+        lob_demographics = {
+            "short term": ShortTermMedicalDemographics,
+            "medicare": MedicareDemographics,
+            "vision": VisionDemographics,
+            "aca": ACAHealthDemographics,
+            "dental": DentalDemographics,
+            "supplemental": SupplementalDemographics,
+        }
+        applicant_demographics = None
+        for key, value in lob_demographics.items():
+            if key in lob_type.lower():
+                # instantiate LOB demographics class
+                applicant_demographics = value()
+        # raise Value Error if LOB type is not valid
+        if applicant_demographics is None:
+            raise ValueError(
+                f"LOB type '{lob_type}' format is invalid. Valid values are: {list(lob_demographics.keys())}"
+            )
+
+        for key, value in kwargs.items():
+            setattr(applicant_demographics, key, value)
+        applicant_demographics.fill_out_form(self.driver)
 
     def verify_text(self, text: str, description: str = None, timeout: int = 20) -> None:
         """Verifies that the text is present in the page."""
@@ -142,7 +130,8 @@ class ChoiceDTCActions:
         """Gets the images of the plans with popular ribbon and save it in the images directory"""
         self.quotes.get_plan_with_popular_ribbon(timeout)
 
-    def compare(self, expected: str, actual: str) -> None:
+    @staticmethod
+    def compare(expected: str, actual: str) -> None:
         """Compares the expected and actual values"""
         compare_values(expected, actual)
 

@@ -23,6 +23,7 @@ repos:
       entry: poetry run flake8
       types: [python]
     - id: isort
+      args: ["--profile", "black"]
       name: isort
       language: system
       entry: poetry run isort
