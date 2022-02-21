@@ -4,17 +4,15 @@ from selenium.webdriver.remote.webelement import WebElement
 from src.choice_dtc.census import Census
 from src.choice_dtc.demographics import (
     ACAHealthDemographics,
-    DentalDemographics,
     MedicareDemographics,
     ShortTermMedicalDemographics,
-    SupplementalDemographics,
-    VisionDemographics,
+    SupplementaryDemographics,
 )
 from src.choice_dtc.image import ChoiceDTCImage
 from src.choice_dtc.modal import Modal
 from src.choice_dtc.quotes import Quotes
-from src.lib.browser import Browser
-from src.utils.utils import compare_values, get_file_path
+from src.common.browser import Browser
+from src.common.utils import compare_values, get_file_path
 
 LOCATOR_TYPE = ["css selector", "xpath", "id", "name", "class name", "link text", "partial link text"]
 
@@ -86,10 +84,10 @@ class ChoiceDTCActions:
         lob_demographics = {
             "short term": ShortTermMedicalDemographics,
             "medicare": MedicareDemographics,
-            "vision": VisionDemographics,
             "aca": ACAHealthDemographics,
-            "dental": DentalDemographics,
-            "supplemental": SupplementalDemographics,
+            "vision": SupplementaryDemographics,
+            "dental": SupplementaryDemographics,
+            "supplemental": SupplementaryDemographics,
         }
         applicant_demographics = None
         for key, value in lob_demographics.items():

@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
 from src.choice_dtc.image import ChoiceDTCImage
-from src.lib.browser import Browser
+from src.common.browser import Browser
 
 
 class Quotes:
