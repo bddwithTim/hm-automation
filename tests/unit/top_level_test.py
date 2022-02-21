@@ -1,4 +1,4 @@
-from src.utils.utils import MergeStrategy, deep_merge_dict
+from src.common.utils import MergeStrategy, deep_merge_dict
 
 
 def test__deep_merge_dict__empty_base():

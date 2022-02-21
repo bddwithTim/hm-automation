@@ -6,7 +6,7 @@ from PIL import Image
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
-from src.lib.browser import Browser
+from src.common.browser import Browser
 
 
 class ChoiceDTCImage:

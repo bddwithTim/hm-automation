@@ -3,8 +3,8 @@ from datetime import datetime
 
 import pytest
 
-from src.lib.browser import get_driver
-from src.utils.utils import get_config
+from src.common.browser import get_driver
+from src.common.utils import get_config
 
 
 @pytest.fixture(scope="session")

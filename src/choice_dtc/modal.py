@@ -3,7 +3,7 @@ from logging import getLogger
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 
-from src.lib.browser import Browser
+from src.common.browser import Browser
 
 
 class Modal:
