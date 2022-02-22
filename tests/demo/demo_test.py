@@ -4,7 +4,7 @@ import pytest
 
 import src.common.log as logger
 from src.choice_dtc.choice_dtc_actions import ChoiceDTCActions
-from src.common.utils import get_config, parse_str, read_xls
+from src.common.utils import get_config, parse_str, read_xls, rectify_zip_code
 
 
 @pytest.mark.smoke
@@ -20,7 +20,7 @@ def test_demo_selecting_specific_plan(app_type, zip_code, prod_type, plan, actio
 
     acts.get_url(app_type, data["choice_dtc_sites"][app_type]["url"])
     acts.lob_default_state(driver)  # ensures no LOBs are selected from previous tests
-    acts.enter(zip_code, "#zipCode")
+    acts.enter(rectify_zip_code(zip_code), "#zipCode")
     acts.click("LOB selection", data["choice_dtc_lob"][parse_str(prod_type)]["css_value"])
     acts.click("Let's Go!", "[id*='submit-button-title']")
 
@@ -63,12 +63,12 @@ def test_demo_lob(
 
     acts.get_url(app_type, data["choice_dtc_sites"][app_type]["url"])
     acts.lob_default_state(driver)  # ensures no LOBs are selected from previous tests
-    acts.enter(zip_code, "#zipCode")
+    acts.enter(rectify_zip_code(zip_code), "#zipCode")
     acts.click(f"{prod_type} LOB", data["choice_dtc_lob"][parse_str(prod_type)]["css_value"])
     acts.click("Let's Go!", "[id*='submit-button-title']")
 
     acts.verify_page_loaded("Tell Us About Yourself", page_title="Contact Information", timeout=10)
-    acts.input_demographics(
+    acts.input_applicant_demographics(
         lob_type=prod_type,
         phone=phone,
         email=email,
