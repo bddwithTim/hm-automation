@@ -89,3 +89,26 @@ class ACAHealthDemographics(ApplicantInformation):
 
         driver.find_element_by_xpath(data["annual_income"]).send_keys(self.annual_income)
         driver.find_element_by_xpath(data["household_members"]).send_keys(self.household_members)
+
+
+def fill_out_details(driver: webdriver, lob_type: str, **kwargs) -> None:
+    lob_demographics = {
+        "short term": ShortTermMedicalDemographics,
+        "medicare": MedicareDemographics,
+        "aca": ACAHealthDemographics,
+        "vision": SupplementaryDemographics,
+        "dental": SupplementaryDemographics,
+        "supplemental": SupplementaryDemographics,
+    }
+    applicant_demographics = None
+    for key, value in lob_demographics.items():
+        if key in lob_type.lower():
+            # instantiate LOB demographics class
+            applicant_demographics = value()
+    # raise Value Error if LOB type is not valid
+    if applicant_demographics is None:
+        raise ValueError(f"LOB type '{lob_type}' format is invalid. Valid values are: {list(lob_demographics.keys())}")
+
+    for key, value in kwargs.items():
+        setattr(applicant_demographics, key, value)
+    applicant_demographics.fill_out_form(driver)

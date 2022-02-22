@@ -19,9 +19,10 @@ def test_fips_stm(zip_code, fips, state, county, county_selection, prod_name, pl
     log.info("Test Case Logging Start")
 
     data = get_config("choice_dtc.yaml")
+    test_environment = data["choice_dtc_sites"][get_config("config.yaml")["environment"]]["url"]
     acts = ChoiceDTCActions(request.node.name, driver)
 
-    acts.get_url("dtc-model", data["choice_dtc_sites"]["dtc-model"]["url"])
+    acts.get_url("HealthMarket's shop site", test_environment)  # eg., model/supp environment
     acts.lob_default_state(driver)  # ensures no LOBs are selected from previous tests
     acts.enter(rectify_zip_code(zip_code), "#zipCode")
     acts.select_county(county, title_case(county_selection))
@@ -29,8 +30,8 @@ def test_fips_stm(zip_code, fips, state, county, county_selection, prod_name, pl
     acts.click("Let's Go!", "[id*='submit-button-title']")
 
     acts.verify_page_loaded("Tell Us About Yourself", page_title="Contact Information", timeout=20)
-    acts.input_demographics(
-        insurance_type="Short Term", date_of_birth="03/03/1980", gender="Female", email="", parent="No", tobacco="No"
+    acts.input_applicant_demographics(
+        lob_type="Short Term", birth_date="03/03/1980", gender="Female", parent="No", tobacco="No"
     )
     acts.click("See Quotes button", "//p[text() = 'See Quotes']", locator_type="xpath")
     acts.wait_plans_to_load(timeout=500)
