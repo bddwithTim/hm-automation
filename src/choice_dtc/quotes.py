@@ -49,6 +49,7 @@ class Quotes:
     def plan_selection(self, plan_name: str, action: str, timeout: int) -> None:
         log = getLogger(f"{self.test_name}.select_plan")
         log.info(f"Plan selected {plan_name}, action taken: {action}, timeout: {timeout}")
+        self.wait_for_plans_to_load(timeout)
         actions = {
             "see plan details": self._click_plan_details,
             "compare": self._click_compare_plans,

@@ -10,6 +10,7 @@ from pathlib import Path
 import pandas as pd
 import yaml
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 
 
@@ -171,3 +172,23 @@ def clear_input_fields(driver: webdriver) -> None:
     for element in web_elements:
         # As element.clear() does not work, we utilize `Keys` instead
         element.send_keys(f"{Keys.CONTROL}A{Keys.DELETE}")
+
+
+def reset_spouse_demographics(driver: webdriver) -> None:
+    # if Spouse demographics is displayed
+    # due to previous test runs, close them.
+    try:
+        driver.find_element_by_xpath("//div[@aria-label='Spouse ']")
+        driver.find_element_by_xpath("//div[@aria-label='Spouse ']//button[@id='remove-button-icon']").click()
+    except NoSuchElementException:
+        return
+
+
+def reset_dependent_demographics(driver: webdriver) -> None:
+    # if dependent demographics is displayed
+    # due to previous test runs, close them.
+    try:
+        driver.find_element_by_xpath("//div[@aria-label='Dependent ']")
+        driver.find_element_by_xpath("//div[@aria-label='Dependent ']//button[@id='remove-button-icon']").click()
+    except NoSuchElementException:
+        return

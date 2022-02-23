@@ -2,12 +2,21 @@ from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
 
 from src.choice_dtc.census import Census
-from src.choice_dtc.demographics import fill_out_details
+from src.choice_dtc.demographics import (
+    fill_out_dependent_details,
+    fill_out_details,
+    fill_out_spouse_details,
+)
 from src.choice_dtc.image import ChoiceDTCImage
 from src.choice_dtc.modal import Modal
 from src.choice_dtc.quotes import Quotes
 from src.common.browser import Browser
-from src.common.utils import compare_values, get_file_path
+from src.common.utils import (
+    compare_values,
+    get_file_path,
+    reset_dependent_demographics,
+    reset_spouse_demographics,
+)
 
 LOCATOR_TYPE = ["css selector", "xpath", "id", "name", "class name", "link text", "partial link text"]
 
@@ -77,7 +86,18 @@ class ChoiceDTCActions:
 
     def input_applicant_demographics(self, lob_type: str, **kwargs) -> None:
         """Fills out the demographics of the lob type"""
+        # if non-primary applicant's demographics are displayed due to previous test runs, clear them.
+        reset_spouse_demographics(self.driver)
+        reset_dependent_demographics(self.driver)
         fill_out_details(self.driver, lob_type, **kwargs)
+
+    def input_spouse_demographics(self, **kwargs) -> None:
+        """Fills out the demographics of the spouse"""
+        fill_out_spouse_details(self.driver, **kwargs)
+
+    def input_dependent_demographics(self, **kwargs) -> None:
+        """Fills out the demographics of the dependent"""
+        fill_out_dependent_details(self.driver, **kwargs)
 
     def verify_text(self, text: str, description: str = None, timeout: int = 20) -> None:
         """Verifies that the text is present in the page."""
