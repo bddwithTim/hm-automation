@@ -2,6 +2,7 @@ import copy
 import json
 import os
 import re
+from contextlib import suppress
 from datetime import date, datetime
 from enum import Enum
 from logging import getLogger
@@ -174,21 +175,11 @@ def clear_input_fields(driver: webdriver) -> None:
         element.send_keys(f"{Keys.CONTROL}A{Keys.DELETE}")
 
 
-def reset_spouse_demographics(driver: webdriver) -> None:
-    # if Spouse demographics is displayed
-    # due to previous test runs, close them.
-    try:
+def reset_non_primary_applicant_demographics(driver: webdriver) -> None:
+    with suppress(NoSuchElementException):
+        # Checking if Spouse demographics is displayed
         driver.find_element_by_xpath("//div[@aria-label='Spouse ']")
         driver.find_element_by_xpath("//div[@aria-label='Spouse ']//button[@id='remove-button-icon']").click()
-    except NoSuchElementException:
-        return
-
-
-def reset_dependent_demographics(driver: webdriver) -> None:
-    # if dependent demographics is displayed
-    # due to previous test runs, close them.
-    try:
+        # Checking if Dependent demographics is displayed
         driver.find_element_by_xpath("//div[@aria-label='Dependent ']")
         driver.find_element_by_xpath("//div[@aria-label='Dependent ']//button[@id='remove-button-icon']").click()
-    except NoSuchElementException:
-        return

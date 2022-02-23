@@ -139,7 +139,7 @@ class DependentDemographics(DependentInformation):
 
 
 def fill_out_details(driver: webdriver, lob_type: str, **kwargs) -> None:
-    """ Fill out details for the primary applicant. """
+    """Fill out details for the primary applicant."""
 
     lob_demographics = {
         "short term": ShortTermMedicalDemographics,

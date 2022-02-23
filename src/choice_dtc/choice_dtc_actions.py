@@ -14,8 +14,7 @@ from src.common.browser import Browser
 from src.common.utils import (
     compare_values,
     get_file_path,
-    reset_dependent_demographics,
-    reset_spouse_demographics,
+    reset_non_primary_applicant_demographics,
 )
 
 LOCATOR_TYPE = ["css selector", "xpath", "id", "name", "class name", "link text", "partial link text"]
@@ -87,8 +86,7 @@ class ChoiceDTCActions:
     def input_applicant_demographics(self, lob_type: str, **kwargs) -> None:
         """Fills out the demographics of the lob type"""
         # if non-primary applicant's demographics are displayed due to previous test runs, clear them.
-        reset_spouse_demographics(self.driver)
-        reset_dependent_demographics(self.driver)
+        reset_non_primary_applicant_demographics(self.driver)
         fill_out_details(self.driver, lob_type, **kwargs)
 
     def input_spouse_demographics(self, **kwargs) -> None:
