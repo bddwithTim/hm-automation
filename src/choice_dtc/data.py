@@ -17,16 +17,17 @@ class ApplicantInformation:
 
 
 @dataclass
-class Spouse:
-    birth_date: str
-    gender: str
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
+class SpouseInformation:
+    birth_date: str = None
+    gender: str = None
+    tobacco: Optional[str] = None
+    first_name: Optional[str] = ""
+    last_name: Optional[str] = ""
 
 
 @dataclass
-class Dependent:
-    birth_date: str
-    gender: str
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
+class DependentInformation:
+    birth_date: str = None
+    gender: str = None
+    first_name: Optional[str] = ""
+    last_name: Optional[str] = ""

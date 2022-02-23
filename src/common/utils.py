@@ -2,6 +2,7 @@ import copy
 import json
 import os
 import re
+from contextlib import suppress
 from datetime import date, datetime
 from enum import Enum
 from logging import getLogger
@@ -10,6 +11,7 @@ from pathlib import Path
 import pandas as pd
 import yaml
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 
 
@@ -171,3 +173,13 @@ def clear_input_fields(driver: webdriver) -> None:
     for element in web_elements:
         # As element.clear() does not work, we utilize `Keys` instead
         element.send_keys(f"{Keys.CONTROL}A{Keys.DELETE}")
+
+
+def reset_non_primary_applicant_demographics(driver: webdriver) -> None:
+    with suppress(NoSuchElementException):
+        # Checking if Spouse demographics is displayed
+        driver.find_element_by_xpath("//div[@aria-label='Spouse ']")
+        driver.find_element_by_xpath("//div[@aria-label='Spouse ']//button[@id='remove-button-icon']").click()
+        # Checking if Dependent demographics is displayed
+        driver.find_element_by_xpath("//div[@aria-label='Dependent ']")
+        driver.find_element_by_xpath("//div[@aria-label='Dependent ']//button[@id='remove-button-icon']").click()
