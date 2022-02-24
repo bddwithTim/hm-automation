@@ -6,16 +6,13 @@ from src.choice_dtc.demographics import (
     fill_out_dependent_details,
     fill_out_details,
     fill_out_spouse_details,
+    reset_non_primary_applicant_demographics,
 )
 from src.choice_dtc.image import ChoiceDTCImage
 from src.choice_dtc.modal import Modal
 from src.choice_dtc.quotes import Quotes
 from src.common.browser import Browser
-from src.common.utils import (
-    compare_values,
-    get_file_path,
-    reset_non_primary_applicant_demographics,
-)
+from src.common.utils import compare_values, get_file_path
 
 LOCATOR_TYPE = ["css selector", "xpath", "id", "name", "class name", "link text", "partial link text"]
 

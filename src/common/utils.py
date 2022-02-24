@@ -2,7 +2,6 @@ import copy
 import json
 import os
 import re
-from contextlib import suppress
 from datetime import date, datetime
 from enum import Enum
 from logging import getLogger
@@ -10,9 +9,6 @@ from pathlib import Path
 
 import pandas as pd
 import yaml
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.keys import Keys
 
 
 class MergeStrategy(Enum):
@@ -165,21 +161,3 @@ def compare_values(value, value_2) -> None:
         log.error(f"Values do not match: {value} != {value_2}")
         assert False, ValueError(f"Values do not match: {value} != {value_2}")
     log.info(f"Values match: {value} == {value_2}")
-
-
-def clear_input_fields(driver: webdriver) -> None:
-    # clears the remaining data in the text fields if any from previous test
-    web_elements = driver.find_elements_by_xpath('//input[@type="text" or @type="email" or @type="tel"]')
-    for element in web_elements:
-        # As element.clear() does not work, we utilize `Keys` instead
-        element.send_keys(f"{Keys.CONTROL}A{Keys.DELETE}")
-
-
-def reset_non_primary_applicant_demographics(driver: webdriver) -> None:
-    with suppress(NoSuchElementException):
-        # Checking if Spouse demographics is displayed
-        driver.find_element_by_xpath("//div[@aria-label='Spouse ']")
-        driver.find_element_by_xpath("//div[@aria-label='Spouse ']//button[@id='remove-button-icon']").click()
-        # Checking if Dependent demographics is displayed
-        driver.find_element_by_xpath("//div[@aria-label='Dependent ']")
-        driver.find_element_by_xpath("//div[@aria-label='Dependent ']//button[@id='remove-button-icon']").click()

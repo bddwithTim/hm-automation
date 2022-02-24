@@ -1,11 +1,8 @@
 from logging import getLogger
 from typing import List
 
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
 from src.choice_dtc.image import ChoiceDTCImage
@@ -31,20 +28,6 @@ class Quotes:
         self.browser.verify_page_is_displayed("Quotes page", page_title="Quotes", timeout=30)
         plans = "//div[@class = 'MuiTypography-root MuiTypography-h6 MuiTypography-colorTextPrimary']"
         self.browser.get_web_elements(plans, locator_type="xpath", timeout=timeout)
-
-    # define an async function that will check if the plans are loaded
-    def _no_plans_loaded(self) -> None:
-        log = getLogger(f"{self.test_name}._no_plans_loaded")
-        log.info("Checking if plans are loaded")
-        # checks if the text 'Call us Today!' is present within 20 seconds
-        # if the text is present, it means there are no plans loaded
-        self.rest = WebDriverWait(self.driver, 20)
-        try:
-            self.rest.until(ec.presence_of_element_located((By.XPATH, "//h6[contains(text(), 'Call us Today!')]")))
-            log.info("No plans were loaded")
-            assert False, "No plans were loaded"
-        except TimeoutException:
-            pass
 
     def plan_selection(self, plan_name: str, action: str, timeout: int) -> None:
         log = getLogger(f"{self.test_name}.select_plan")

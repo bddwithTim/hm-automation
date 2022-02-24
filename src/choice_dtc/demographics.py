@@ -1,11 +1,15 @@
+from contextlib import suppress
+
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.keys import Keys
 
 from src.choice_dtc.data import (
     ApplicantInformation,
     DependentInformation,
     SpouseInformation,
 )
-from src.common.utils import clear_input_fields, get_config, is_legal_age
+from src.common.utils import get_config, is_legal_age
 
 
 class ShortTermMedicalDemographics(ApplicantInformation):
@@ -175,3 +179,28 @@ def fill_out_dependent_details(driver: webdriver, **kwargs) -> None:
     for key, value in kwargs.items():
         setattr(dependent_demographics, key, value)
     dependent_demographics.fill_out_form(driver)
+
+
+def clear_input_fields(driver: webdriver) -> None:
+    # clears the remaining data in the text fields if any from previous test
+    web_elements = driver.find_elements_by_xpath('//input[@type="text" or @type="email" or @type="tel"]')
+    for element in web_elements:
+        # As element.clear() does not work, we utilize `Keys` instead
+        element.send_keys(f"{Keys.CONTROL}A{Keys.DELETE}")
+
+
+def _reset_spouse_demographics(driver: webdriver) -> None:
+    with suppress(NoSuchElementException):
+        # Checking if Spouse demographics is displayed
+        driver.find_element_by_xpath("//div[@aria-label='Spouse ']//button[@id='remove-button-icon']").click()
+
+
+def _reset_dependent_demographics(driver: webdriver) -> None:
+    with suppress(NoSuchElementException):
+        # Checking if Dependent demographics is displayed
+        driver.find_element_by_xpath("//div[@aria-label='Dependent ']//button[@id='remove-button-icon']").click()
+
+
+def reset_non_primary_applicant_demographics(driver: webdriver) -> None:
+    _reset_spouse_demographics(driver)
+    _reset_dependent_demographics(driver)

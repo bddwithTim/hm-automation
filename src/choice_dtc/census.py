@@ -1,3 +1,4 @@
+from contextlib import suppress
 from logging import getLogger
 
 from selenium import webdriver
@@ -24,16 +25,14 @@ class Census:
         log.info("Ensuring census page is in default state")
         browser = Browser("lob_default_state", driver)
         browser.verify_page_is_displayed("Landing Page", "HealthMarkets Marketplace", timeout=30)
-        try:
+
+        with suppress(TimeoutException):
             modal = WebDriverWait(driver, timeout=2).until(
                 ec.presence_of_element_located((By.XPATH, "//div[@class='MuiDialogContent-root']"))
             )
             # if 'Warning!' modal is displayed in landing page, click continue button
             if "Warning!" in modal.text:
                 self.browser.click("Continue button", "//span[contains(text(),'Continue')]", locator_type="xpath")
-        except TimeoutException:
-            # indicates no modal is displayed
-            pass
         self.lob_clean_state(driver)
 
     def lob_clean_state(self, driver) -> None:
