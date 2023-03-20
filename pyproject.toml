@@ -8,7 +8,7 @@ authors = ["Your Name <you@example.com>"]
 python = "^3.9"
 selenium = "^4.1.0"
 pandas = "^1.4.0"
-Pillow = "^9.0.1"
+Pillow = "^9.3.0"
 numpy = "^1.22.1"
 openpyxl = "^3.0.9"
 
